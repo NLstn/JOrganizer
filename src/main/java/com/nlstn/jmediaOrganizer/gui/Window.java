@@ -15,7 +15,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -27,15 +26,38 @@ import com.nlstn.jmediaOrganizer.MusicProcessor;
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 
+/**
+ * This class represents the main window.<br>
+ * <br>
+ * The MainWindow shows the files in the current input folder and, if already created, a preview of the files after the conversion.<br>
+ * The menu bar has 3 entries:
+ * <ul>
+ * <li>File</li>
+ * <li>Action</li>
+ * <li>Converters</li>
+ * </ul>
+ * 
+ * Creation: 04.12.2017<br>
+ *
+ * @author Niklas Lahnstein
+ */
 public class Window {
 
-	private int				width	= 1200;
-	private int				height	= width / 16 * 9;	// 387
+	/**
+	 * The initial width of the window, which is {@value}.
+	 */
+	private int			width	= 1200;
 
-	private JFrame			frame;
+	/**
+	 * The initial height of the window, which is {@value}<br>
+	 * (16:9 ratio to {@link #width}).
+	 */
+	private int			height	= width / 16 * 9;	// 387
 
-	private JTextArea		oldValues;
-	private JTextArea		newValues;
+	private JFrame		frame;
+
+	private JTextArea	oldValues;
+	private JTextArea	newValues;
 
 	public Window() {
 		try {
@@ -89,42 +111,11 @@ public class Window {
 		frame.setVisible(true);
 	}
 
-	public void onChooseInputFolder() {
-		DirectoryChooser chooser = new DirectoryChooser(frame);
-		File folder = chooser.getSelectedDirectory();
-		if (folder == null)
-			return;
-		MusicProcessor.setInputFolder(folder);
-		reloadInputFolder();
-	}
-
-	private void getConversionPreview() {
-		if (!checkInputFolderLoaded())
-			return;
-		List<String> files = FileProcessor.getConversionPreview();
-		StringBuilder builder = new StringBuilder();
-		for (String file : files)
-			builder.append(file).append("\n");
-		newValues.setText(builder.toString());
-	}
-
-	private boolean checkInputFolderLoaded() {
-		if (!FileProcessor.isFolderLoaded()) {
-			JOptionPane.showMessageDialog(frame, "Please choose a folder!");
-			return false;
-		}
-		return true;
-	}
-
-	private void reloadInputFolder() {
-		List<File> files = FileProcessor.loadAllFiles();
-		StringBuilder builder = new StringBuilder();
-		for (File file : files) {
-			builder.append(file.getAbsolutePath()).append("\n");
-		}
-		oldValues.setText(builder.toString());
-	}
-
+	/**
+	 * Creates the menu bar for the main window.
+	 * 
+	 * @return The menu bar for the main window
+	 */
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 
@@ -177,6 +168,58 @@ public class Window {
 		action.add(itmClean);
 
 		menuBar.add(action);
+
+		JMenu converters = new JMenu("Converters");
+
+		JMenuItem itmID3ToName = new JMenuItem("ID3Tag -> Filename Converter");
+		itmID3ToName.addActionListener((ActionEvent e) -> openId3ToNameConverter());
+		converters.add(itmID3ToName);
+
+		menuBar.add(converters);
+
 		return menuBar;
+	}
+
+	public void onChooseInputFolder() {
+		DirectoryChooser chooser = new DirectoryChooser(frame);
+		File folder = chooser.getSelectedDirectory();
+		if (folder == null)
+			return;
+		MusicProcessor.setInputFolder(folder);
+		reloadInputFolder();
+	}
+
+	/**
+	 * Called when the ID3ToName converter is being opened from the menu bar.
+	 */
+	private void openId3ToNameConverter() {
+
+	}
+
+	private void getConversionPreview() {
+		if (!checkInputFolderLoaded())
+			return;
+		List<String> files = FileProcessor.getConversionPreview();
+		StringBuilder builder = new StringBuilder();
+		for (String file : files)
+			builder.append(file).append("\n");
+		newValues.setText(builder.toString());
+	}
+
+	private boolean checkInputFolderLoaded() {
+		if (!FileProcessor.isFolderLoaded()) {
+			JOptionPane.showMessageDialog(frame, "Please choose a folder!");
+			return false;
+		}
+		return true;
+	}
+
+	private void reloadInputFolder() {
+		List<File> files = FileProcessor.loadAllFiles();
+		StringBuilder builder = new StringBuilder();
+		for (File file : files) {
+			builder.append(file.getAbsolutePath()).append("\n");
+		}
+		oldValues.setText(builder.toString());
 	}
 }
