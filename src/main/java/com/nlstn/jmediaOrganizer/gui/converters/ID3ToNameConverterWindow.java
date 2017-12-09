@@ -1,7 +1,7 @@
 package com.nlstn.jmediaOrganizer.gui.converters;
 
 import java.awt.Color;
-import java.awt.Insets;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -11,6 +11,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -33,6 +34,8 @@ public class ID3ToNameConverterWindow extends JDialog {
 	private JTextArea			lblExample;
 
 	private JCheckBox			chkEnabled;
+
+	private JScrollPane			scrollExample;
 
 	private String				exampleArtist		= "Linkin Park";
 	private String				exampleAlbum		= "A Thousand Suns";
@@ -60,34 +63,37 @@ public class ID3ToNameConverterWindow extends JDialog {
 		add(lblEnabled);
 
 		lblExample = new JTextArea();
-		lblExample.setBounds(10, 27, 560, 130);
 		lblExample.setEditable(false);
 
 		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK);
 		Border insets = new EmptyBorder(5, 5, 5, 5);
 
-		lblExample.setBorder(new CompoundBorder(lineBorder, insets));
-		lblExample.setMargin(new Insets(5, 5, 5, 5));
-		add(lblExample);
+		scrollExample = new JScrollPane(lblExample);
+		scrollExample.setBounds(10, 27, 560, 150);
+		scrollExample.setBorder(new CompoundBorder(lineBorder, insets));
+		add(scrollExample);
 
 		JLabel lblPattern = new JLabel("Pattern:");
-		lblPattern.setBounds(10, 167, 50, 28);
+		lblPattern.setBounds(10, 197, 50, 28);
 		add(lblPattern);
 
 		txtPattern = new JTextField();
-		txtPattern.setBounds(70, 167, 460, 28);
+		txtPattern.setBounds(70, 197, 460, 28);
 		txtPattern.getDocument().addDocumentListener(new DocumentListener() {
 
 			public void insertUpdate(DocumentEvent e) {
 				lblExample.setText(buildPreview());
+				lblExample.setCaretPosition(0);
 			}
 
 			public void removeUpdate(DocumentEvent e) {
 				lblExample.setText(buildPreview());
+				lblExample.setCaretPosition(0);
 			}
 
 			public void changedUpdate(DocumentEvent e) {
 				lblExample.setText(buildPreview());
+				lblExample.setCaretPosition(0);
 			}
 
 		});
@@ -99,6 +105,7 @@ public class ID3ToNameConverterWindow extends JDialog {
 		loadSettings();
 
 		lblExample.setText(buildPreview());
+		lblExample.setCaretPosition(0);
 
 		setVisible(true);
 	}
@@ -134,11 +141,24 @@ public class ID3ToNameConverterWindow extends JDialog {
 		builder.append("Artist (%artist%):\t").append(exampleArtist).append("\n");
 		builder.append("Album (%album%):\t").append(exampleAlbum).append("\n");
 		builder.append("\n");
-		builder.append("Preview:\t");
+		StringBuilder previewLine = new StringBuilder();
+		previewLine.append("Preview:\t");
 		if (txtPattern.getText() != null) {
 			String pattern = txtPattern.getText().replace("%track%", exampleTrack).replace("%title%", exampleTitle).replace("%artist%", exampleArtist).replace("%album%", exampleAlbum).replace("%output%", Settings.getOutputFolder()).replace("%extension%", ".mp3");
-			builder.append(pattern);
+			previewLine.append(pattern);
 		}
+		Graphics g = lblExample.getGraphics();
+		if (g != null) { // before making the label visible, graphics are null
+			int stringWidth = g.getFontMetrics().stringWidth(previewLine.toString());
+			if (stringWidth >= 560) {
+				lblExample.setBounds(lblExample.getX(), lblExample.getY(), stringWidth + 20, lblExample.getHeight());
+			}
+			else {
+				lblExample.setBounds(lblExample.getX(), lblExample.getY(), 560, lblExample.getHeight());
+			}
+		}
+
+		builder.append(previewLine.toString());
 		return builder.toString();
 	}
 
