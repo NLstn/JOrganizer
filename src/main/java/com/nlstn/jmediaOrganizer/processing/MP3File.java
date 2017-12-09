@@ -9,9 +9,7 @@ import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import com.nlstn.jmediaOrganizer.Settings;
 
 public class MP3File {
 
@@ -19,8 +17,6 @@ public class MP3File {
 	private Mp3File	mp3File;
 
 	private ID3v2	id3Tag;
-
-	private String	newLoc;
 
 	public MP3File(File file) {
 		this.file = file;
@@ -54,28 +50,28 @@ public class MP3File {
 		return false;
 	}
 
-	public void moveTonewLoc() {
-		try {
-			File newFile = new File(getNewLoc());
-			newFile.getParentFile().mkdirs();
-			newFile.createNewFile();
-		}
-		catch (IOException e1) {
-			System.err.println("Failed to get newFile " + newLoc + ", " + e1.getClass().getName() + ": " + e1.getMessage());
-			return;
-		}
-		try {
-			mp3File.save(newLoc);
-			file.delete();
-		}
-		catch (IOException | NotSupportedException e) {
-			System.err.println("Failed to move " + file.getAbsolutePath() + " to " + newLoc + ", " + e.getClass().getName());
-		}
-	}
+	// public void moveTonewLoc() {
+	// try {
+	// File newFile = new File(getNewLoc());
+	// newFile.getParentFile().mkdirs();
+	// newFile.createNewFile();
+	// }
+	// catch (IOException e1) {
+	// System.err.println("Failed to get newFile " + newLoc + ", " + e1.getClass().getName() + ": " + e1.getMessage());
+	// return;
+	// }
+	// try {
+	// mp3File.save(newLoc);
+	// file.delete();
+	// }
+	// catch (IOException | NotSupportedException e) {
+	// System.err.println("Failed to move " + file.getAbsolutePath() + " to " + newLoc + ", " + e.getClass().getName());
+	// }
+	// }
 
-	public String getNewLoc() {
-		return newLoc = ((Settings.getOutputFolder() + "\\" + (id3Tag.getAlbumArtist().trim() + " - " + id3Tag.getAlbum().trim()).replace(":", "") + "\\").replace("?", "").replaceAll("ue", "ü").replaceAll("/", "").replace("'", "") + id3Tag.getTitle().replaceAll("[\\\\/:*?\"<>|]", "") + getExtension()).trim();
-	}
+	// public String getNewLoc() {
+	// return newLoc = ((Settings.getOutputFolder() + "\\" + (id3Tag.getAlbumArtist().trim() + " - " + id3Tag.getAlbum().trim()).replace(":", "") + "\\").replace("?", "").replaceAll("ue", "ü").replaceAll("/", "").replace("'", "") + id3Tag.getTitle().replaceAll("[\\\\/:*?\"<>|]", "") + getExtension()).trim();
+	// }
 
 	private boolean getId3Tags() {
 		id3Tag = null;
@@ -118,7 +114,7 @@ public class MP3File {
 		return true;
 	}
 
-	private String getExtension() {
+	public String getExtension() {
 		return file.getName().substring(file.getName().lastIndexOf('.'));
 	}
 
