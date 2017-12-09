@@ -26,6 +26,7 @@ import com.nlstn.jmediaOrganizer.MusicProcessor;
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.converters.ID3ToNameConverterWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
+import com.nlstn.jmediaOrganizer.processing.MP3File;
 
 /**
  * This class represents the main window.<br>
@@ -196,7 +197,8 @@ public class Window {
 	 * Called when the ID3ToName converter is being opened from the menu bar.
 	 */
 	private void openId3ToNameConverter() {
-		new ID3ToNameConverterWindow(frame);
+		MP3File preview = FileProcessor.getPreviewExample();
+		new ID3ToNameConverterWindow(frame, preview);
 	}
 
 	private void getConversionPreview() {

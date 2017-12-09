@@ -15,14 +15,12 @@ import com.nlstn.jmediaOrganizer.Settings;
 
 public class MP3File {
 
-	private static final String	outputPath	= "D:\\Media\\Music\\";
+	private File	file;
+	private Mp3File	mp3File;
 
-	private File				file;
-	private Mp3File				mp3File;
+	private ID3v2	id3Tag;
 
-	private ID3v2				id3Tag;
-
-	private String				newLoc;
+	private String	newLoc;
 
 	public MP3File(File file) {
 		this.file = file;
@@ -113,7 +111,7 @@ public class MP3File {
 
 			}
 		}
-		if (id3Tag.getAlbum() == null || id3Tag.getAlbum() == "" || id3Tag.getAlbumArtist() == null || id3Tag.getAlbumArtist() == "" || id3Tag.getTitle() == null || id3Tag.getTitle() == "" || id3Tag.getTrack() == null || id3Tag.getTrack() == "") {
+		if (id3Tag.getAlbum() == null || id3Tag.getAlbum() == "" || id3Tag.getTitle() == null || id3Tag.getTitle() == "" || id3Tag.getTrack() == null || id3Tag.getTrack() == "") {
 			System.err.println("Missing ID3Tags " + file.getAbsolutePath());
 			return false;
 		}
@@ -122,6 +120,22 @@ public class MP3File {
 
 	private String getExtension() {
 		return file.getName().substring(file.getName().lastIndexOf('.'));
+	}
+
+	public String getTitle() {
+		return id3Tag.getTitle();
+	}
+
+	public String getArtist() {
+		return id3Tag.getArtist();
+	}
+
+	public String getAlbum() {
+		return id3Tag.getAlbum();
+	}
+
+	public String getTrack() {
+		return id3Tag.getTrack();
 	}
 
 }

@@ -113,6 +113,15 @@ public class FileProcessor {
 		}
 	}
 
+	public static MP3File getPreviewExample() {
+		if (currentFiles == null || currentFiles.size() == 0)
+			return null;
+		MP3File example = new MP3File(currentFiles.get(0));
+		if (!example.loadMp3Data())
+			return null;
+		return example;
+	}
+
 	public static int getFileCount() {
 		return currentFiles.size();
 	}

@@ -12,6 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.nlstn.jmediaOrganizer.gui.Window;
+import com.nlstn.jmediaOrganizer.processing.MP3File;
 
 public class ID3ToNameConverterWindow extends JDialog {
 	private static final long	serialVersionUID	= -9218566319600619223L;
@@ -28,7 +29,7 @@ public class ID3ToNameConverterWindow extends JDialog {
 	private String				exampleTrack		= "12";
 	private String				exampleTitle		= "Iridescent";
 
-	public ID3ToNameConverterWindow(JFrame mainFrame) {
+	public ID3ToNameConverterWindow(JFrame mainFrame, MP3File preview) {
 		super(mainFrame, "ID3Tag to Name Converter", true);
 		setSize(width, height);
 		setLocationRelativeTo(mainFrame);
@@ -67,9 +68,19 @@ public class ID3ToNameConverterWindow extends JDialog {
 		button.setBounds(width / 2 - Window.BUTTON_WIDTH / 2, height - 100, Window.BUTTON_WIDTH, 28);
 		add(button);
 
+		if (preview != null)
+			setPreviewData(preview.getTrack(), preview.getTitle(), preview.getArtist(), preview.getAlbum());
+
 		lblExample.setText(buildPreview());
 
 		setVisible(true);
+	}
+
+	public void setPreviewData(String track, String title, String artist, String album) {
+		exampleTrack = track;
+		exampleTitle = title;
+		exampleArtist = artist;
+		exampleAlbum = album;
 	}
 
 	private String buildPreview() {
