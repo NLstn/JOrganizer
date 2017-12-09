@@ -24,6 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.nlstn.jmediaOrganizer.MusicProcessor;
 import com.nlstn.jmediaOrganizer.Settings;
+import com.nlstn.jmediaOrganizer.gui.converters.ID3ToNameConverterWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 
 /**
@@ -43,21 +44,23 @@ import com.nlstn.jmediaOrganizer.processing.FileProcessor;
  */
 public class Window {
 
+	public static final int	BUTTON_WIDTH	= 150;
+
 	/**
 	 * The initial width of the window, which is {@value}.
 	 */
-	private int			width	= 1200;
+	private int				width			= 1200;
 
 	/**
 	 * The initial height of the window, which is {@value}<br>
 	 * (16:9 ratio to {@link #width}).
 	 */
-	private int			height	= width / 16 * 9;	// 387
+	private int				height			= width / 16 * 9;	// 387
 
-	private JFrame		frame;
+	private JFrame			frame;
 
-	private JTextArea	oldValues;
-	private JTextArea	newValues;
+	private JTextArea		oldValues;
+	private JTextArea		newValues;
 
 	public Window() {
 		try {
@@ -137,7 +140,7 @@ public class Window {
 		JMenuItem itmSettings = new JMenuItem("Settings");
 		itmSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 		itmSettings.addActionListener((ActionEvent e) -> {
-			new MainSettingsWindow(frame);
+			new SettingsWindow(frame);
 		});
 		file.add(itmSettings);
 
@@ -193,7 +196,7 @@ public class Window {
 	 * Called when the ID3ToName converter is being opened from the menu bar.
 	 */
 	private void openId3ToNameConverter() {
-
+		new ID3ToNameConverterWindow(frame);
 	}
 
 	private void getConversionPreview() {

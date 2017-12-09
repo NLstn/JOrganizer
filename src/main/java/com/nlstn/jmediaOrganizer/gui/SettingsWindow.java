@@ -20,7 +20,7 @@ import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.settings.MainSettingsPanel;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsPanel;
 
-public class MainSettingsWindow {
+public class SettingsWindow {
 
 	private JDialog				dialog;
 
@@ -28,7 +28,7 @@ public class MainSettingsWindow {
 
 	private JPanel				mainPanel;
 
-	public MainSettingsWindow(JFrame mainFrame) {
+	public SettingsWindow(JFrame mainFrame) {
 		settingsPanels = new ArrayList<SettingsPanel>();
 		dialog = new JDialog(mainFrame, "Settings", true);
 		dialog.setSize(850, 550);
