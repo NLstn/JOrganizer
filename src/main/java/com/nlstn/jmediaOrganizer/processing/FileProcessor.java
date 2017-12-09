@@ -11,6 +11,7 @@ import java.util.concurrent.FutureTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nlstn.jmediaOrganizer.ID3ToNameConverter;
 import com.nlstn.jmediaOrganizer.MusicProcessor;
 import com.nlstn.jmediaOrganizer.Settings;
 
@@ -54,8 +55,10 @@ public class FileProcessor {
 
 		int amountPerThread = currentFiles.size() / threadCount;
 
+		ID3ToNameConverter converter = new ID3ToNameConverter();
+
 		for (int i = 0; i < threadCount; i++) {
-			ConversionPreviewCallable callable = new ConversionPreviewCallable(i * amountPerThread, amountPerThread, currentFiles);
+			ConversionPreviewCallable callable = new ConversionPreviewCallable(converter, i * amountPerThread, amountPerThread, currentFiles);
 			callables.add(callable);
 			FutureTask<List<String>> task = new FutureTask<List<String>>(callable);
 			futureTasks.add(task);
@@ -72,7 +75,6 @@ public class FileProcessor {
 		}
 		logger.debug("Took: " + (System.currentTimeMillis() - currentTime));
 		return result;
-
 	}
 
 	public static void cleanInputFolder() {
@@ -108,9 +110,18 @@ public class FileProcessor {
 				continue;
 			}
 			if (mp3File.loadMp3Data()) {
-				mp3File.moveTonewLoc();
+				// mp3File.moveTonewLoc();
 			}
 		}
+	}
+
+	public static MP3File getPreviewExample() {
+		if (currentFiles == null || currentFiles.size() == 0)
+			return null;
+		MP3File example = new MP3File(currentFiles.get(0));
+		if (!example.loadMp3Data())
+			return null;
+		return example;
 	}
 
 	public static int getFileCount() {

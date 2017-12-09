@@ -55,6 +55,22 @@ public class Settings {
 		}
 	}
 
+	public static boolean getID3ToNameEnabled() {
+		return Boolean.valueOf(properties.getProperty("id3ToNameEnabled", "false"));
+	}
+
+	public static void setID3ToNameEnabled(boolean enabled) {
+		properties.setProperty("id3ToNameEnabled", String.valueOf(enabled));
+	}
+
+	public static String getID3ToNamePattern() {
+		return properties.getProperty("id3ToNamePattern");
+	}
+
+	public static void setID3ToNamePattern(String pattern) {
+		properties.setProperty("id3ToNamePattern", pattern);
+	}
+
 	public static String getOutputFolder() {
 		return properties.getProperty("outputFolder");
 	}
