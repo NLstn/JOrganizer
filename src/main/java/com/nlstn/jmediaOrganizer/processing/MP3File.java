@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import com.nlstn.jmediaOrganizer.MusicProcessor;
 
 public class MP3File {
 
@@ -50,28 +54,15 @@ public class MP3File {
 		return false;
 	}
 
-	// public void moveTonewLoc() {
-	// try {
-	// File newFile = new File(getNewLoc());
-	// newFile.getParentFile().mkdirs();
-	// newFile.createNewFile();
-	// }
-	// catch (IOException e1) {
-	// System.err.println("Failed to get newFile " + newLoc + ", " + e1.getClass().getName() + ": " + e1.getMessage());
-	// return;
-	// }
-	// try {
-	// mp3File.save(newLoc);
-	// file.delete();
-	// }
-	// catch (IOException | NotSupportedException e) {
-	// System.err.println("Failed to move " + file.getAbsolutePath() + " to " + newLoc + ", " + e.getClass().getName());
-	// }
-	// }
-
-	// public String getNewLoc() {
-	// return newLoc = ((Settings.getOutputFolder() + "\\" + (id3Tag.getAlbumArtist().trim() + " - " + id3Tag.getAlbum().trim()).replace(":", "") + "\\").replace("?", "").replaceAll("ue", "ü").replaceAll("/", "").replace("'", "") + id3Tag.getTitle().replaceAll("[\\\\/:*?\"<>|]", "") + getExtension()).trim();
-	// }
+	public void moveToLocation(String newLocation) {
+		try {
+			mp3File.save(newLocation);
+		}
+		catch (NotSupportedException | IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to relocate file!", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 	private boolean getId3Tags() {
 		id3Tag = null;

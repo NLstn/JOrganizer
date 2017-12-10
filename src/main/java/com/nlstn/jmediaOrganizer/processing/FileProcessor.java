@@ -104,13 +104,14 @@ public class FileProcessor {
 	}
 
 	public static void convertFiles() {
+		ID3ToNameConverter converter = new ID3ToNameConverter();
 		for (File file : currentFiles) {
 			MP3File mp3File = new MP3File(file);
 			if (mp3File.deleteIfOfType(ConversionPreviewCallable.invalidTypes)) {
 				continue;
 			}
 			if (mp3File.loadMp3Data()) {
-				// mp3File.moveTonewLoc();
+				
 			}
 		}
 	}
