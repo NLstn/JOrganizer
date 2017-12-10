@@ -13,7 +13,7 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import com.nlstn.jmediaOrganizer.MusicProcessor;
+import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 
 public class MP3File {
 
@@ -55,12 +55,16 @@ public class MP3File {
 	}
 
 	public void moveToLocation(String newLocation) {
+		File f = new File(newLocation);
+		File parent = f.getParentFile();
+		parent.mkdirs();
 		try {
+			f.createNewFile();
 			mp3File.save(newLocation);
 		}
 		catch (NotSupportedException | IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to relocate file!", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to relocate file!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.nlstn.musicProcessor</groupId>
-	<artifactId>MusicProcessor</artifactId>
-	<version>0.0.1</version>
+	<artifactId>JMediaOrganizer</artifactId>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
@@ -68,7 +68,7 @@
 							<archive>
 								<manifest>
 									<mainClass>
-										com.nlstn.jmediaOrganizer.MusicProcessor
+										com.nlstn.jmediaOrganizer.JMediaOrganizer
 									</mainClass>
 								</manifest>
 							</archive>
