@@ -93,7 +93,7 @@ public class Settings {
 	}
 
 	public static String getOutputFolder() {
-		return properties.getProperty("outputFolder");
+		return properties.getProperty("outputFolder", "");
 	}
 
 	public static void setOutputFolder(String outputFolder) {
