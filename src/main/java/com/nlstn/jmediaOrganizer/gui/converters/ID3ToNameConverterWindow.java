@@ -143,7 +143,7 @@ public class ID3ToNameConverterWindow extends JDialog {
 		builder.append("\n");
 		StringBuilder previewLine = new StringBuilder();
 		previewLine.append("Preview:\t");
-		if (txtPattern.getText() != null) {
+		if (txtPattern.getText() != null && !txtPattern.getText().equals("")) {
 			String pattern = txtPattern.getText().replace("%track%", exampleTrack).replace("%title%", exampleTitle).replace("%artist%", exampleArtist).replace("%album%", exampleAlbum).replace("%output%", Settings.getOutputFolder()).replace("%extension%", ".mp3");
 			previewLine.append(pattern);
 		}

@@ -4,13 +4,24 @@ import java.io.File;
 
 import com.nlstn.jmediaOrganizer.gui.Window;
 
+/**
+ * Main class, handles initialization.<br>
+ * <br>
+ * Creation: 09.12.2017<br>
+ *
+ * @author Niklas Lahnstein
+ */
 public class MusicProcessor {
 
+	/**
+	 * The reference to the main window
+	 */
 	private static Window	window;
 
+	/**
+	 * The currently chosen input folder, or null, if no input folder was chosen
+	 */
 	private static File		inputFolder		= null;
-
-	private static File		outputFolder	= null;
 
 	public static void main(String[] args) {
 		window = new Window();
@@ -26,14 +37,6 @@ public class MusicProcessor {
 
 	public static void setInputFolder(File inputFolder) {
 		MusicProcessor.inputFolder = inputFolder;
-	}
-
-	public static File getOutputFolder() {
-		return outputFolder;
-	}
-
-	public static void setOutputFolder(File outputFolder) {
-		MusicProcessor.outputFolder = outputFolder;
 	}
 
 }
