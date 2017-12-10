@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.ID3ToNameConverter;
-import com.nlstn.jmediaOrganizer.MusicProcessor;
+import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.Settings;
 
 public class FileProcessor {
@@ -29,7 +29,7 @@ public class FileProcessor {
 
 	public static List<File> loadAllFiles() {
 		currentFiles = new ArrayList<File>();
-		loadAllFilesRec(MusicProcessor.getInputFolder());
+		loadAllFilesRec(JMediaOrganizer.getInputFolder());
 		return currentFiles;
 	}
 
@@ -78,7 +78,7 @@ public class FileProcessor {
 	}
 
 	public static void cleanInputFolder() {
-		File inputFolder = MusicProcessor.getInputFolder();
+		File inputFolder = JMediaOrganizer.getInputFolder();
 		File[] subFiles = inputFolder.listFiles();
 		for (File subFile : subFiles) {
 			if (subFile.isDirectory())
@@ -87,7 +87,7 @@ public class FileProcessor {
 		if (inputFolder.listFiles().length == 0) {
 			logger.info("Deleting empty folder " + inputFolder.getAbsolutePath());
 			inputFolder.delete();
-			MusicProcessor.setInputFolder(null);
+			JMediaOrganizer.setInputFolder(null);
 		}
 	}
 
@@ -111,8 +111,9 @@ public class FileProcessor {
 				continue;
 			}
 			if (mp3File.loadMp3Data()) {
-				
+				mp3File.moveToLocation(converter.getNewPath(mp3File));
 			}
+			file.delete();
 		}
 	}
 

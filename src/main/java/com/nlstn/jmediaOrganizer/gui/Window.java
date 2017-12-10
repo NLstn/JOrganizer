@@ -22,7 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.nlstn.jmediaOrganizer.MusicProcessor;
+import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.converters.ID3ToNameConverterWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
@@ -132,7 +132,7 @@ public class Window {
 		JMenuItem itmUnload = new JMenuItem("Unload Folder");
 		itmUnload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
 		itmUnload.addActionListener((ActionEvent e) -> {
-			MusicProcessor.setInputFolder(null);
+			JMediaOrganizer.setInputFolder(null);
 			oldValues.setText("");
 			FileProcessor.clearCurrentFiles();
 		});
@@ -189,7 +189,7 @@ public class Window {
 		File folder = chooser.getSelectedDirectory();
 		if (folder == null)
 			return;
-		MusicProcessor.setInputFolder(folder);
+		JMediaOrganizer.setInputFolder(folder);
 		reloadInputFolder();
 	}
 

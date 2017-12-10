@@ -48,7 +48,7 @@ public class Settings {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to create properties file!", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to create properties file!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		else {
@@ -57,7 +57,7 @@ public class Settings {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to load properties file!", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to load properties file!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -72,7 +72,7 @@ public class Settings {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to save properties file!", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to save properties file!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

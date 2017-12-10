@@ -11,7 +11,7 @@ import com.nlstn.jmediaOrganizer.gui.Window;
  *
  * @author Niklas Lahnstein
  */
-public class MusicProcessor {
+public class JMediaOrganizer {
 
 	/**
 	 * The reference to the main window
@@ -36,7 +36,7 @@ public class MusicProcessor {
 	}
 
 	public static void setInputFolder(File inputFolder) {
-		MusicProcessor.inputFolder = inputFolder;
+		JMediaOrganizer.inputFolder = inputFolder;
 	}
 
 }
