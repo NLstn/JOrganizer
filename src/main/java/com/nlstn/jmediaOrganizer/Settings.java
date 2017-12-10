@@ -2,31 +2,53 @@ package com.nlstn.jmediaOrganizer;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import javax.swing.JOptionPane;
+
+/**
+ * This class is used to control settings. Settings are being saved to a file under C:\Users\User\AppData\Roaming\JMediaOrganizer.<br>
+ * <br>
+ * Creation: 09.12.2017<br>
+ *
+ * @author Niklas Lahnstein
+ */
 public class Settings {
 
+	/**
+	 * The path, where the config file is.
+	 */
 	private static String		propertiesPath;
+	/**
+	 * The File representation of the properties path
+	 */
 	private static File			propertiesFile;
 
+	/**
+	 * The actual properties
+	 */
 	private static Properties	properties;
 
+	/**
+	 * Tries to find the file AppData\Roaming\JMediaOrganizer\settings.config.<br>
+	 * If the file was found, the settings in it are being loaded.<br>
+	 * If not, a new file will be created and filled with default values.
+	 */
 	public static void loadSettings() {
-		propertiesPath = System.getenv("APPDATA") + "\\MusicProcessor\\user.properties";
+		propertiesPath = System.getenv("APPDATA") + "\\JMediaOrganizer\\settings.config";
 		propertiesFile = new File(propertiesPath);
 		properties = new Properties();
 		if (!propertiesFile.exists()) {
-			// TODO: catch failed to create properties file
 			propertiesFile.getParentFile().mkdirs();
 			try {
 				propertiesFile.createNewFile();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to create properties file!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		else {
@@ -34,24 +56,23 @@ public class Settings {
 				properties.load(new FileInputStream(propertiesFile));
 			}
 			catch (IOException e) {
-				// TODO catch failed loading
 				e.printStackTrace();
+				JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to load properties file!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
 
+	/**
+	 * Saves all settings to the settings file
+	 */
 	public static void save() {
 		try {
 			OutputStream out = new FileOutputStream(propertiesFile);
 			properties.store(out, "User Properties");
 		}
-		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(MusicProcessor.getWindow().getFrame(), "Error", "Failed to save properties file!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

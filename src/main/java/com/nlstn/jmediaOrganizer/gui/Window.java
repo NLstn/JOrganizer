@@ -50,13 +50,13 @@ public class Window {
 	/**
 	 * The initial width of the window, which is {@value}.
 	 */
-	private int				width			= 1200;
+	private final int		width			= 1200;
 
 	/**
 	 * The initial height of the window, which is {@value}<br>
 	 * (16:9 ratio to {@link #width}).
 	 */
-	private int				height			= width / 16 * 9;	// 387
+	private final int		height			= width / 16 * 9;	// 387
 
 	private JFrame			frame;
 
@@ -226,5 +226,9 @@ public class Window {
 			builder.append(file.getAbsolutePath()).append("\n");
 		}
 		oldValues.setText(builder.toString());
+	}
+
+	public JFrame getFrame() {
+		return frame;
 	}
 }

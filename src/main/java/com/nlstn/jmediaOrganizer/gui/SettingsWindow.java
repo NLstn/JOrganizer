@@ -20,14 +20,34 @@ import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.settings.MainSettingsPanel;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsPanel;
 
+/**
+ * The SettingsWindow uses a CardLayout to display different settings panes<br>
+ * <br>
+ * Creation: 10.12.2017
+ *
+ * @author Niklas Lahnstein
+ */
 public class SettingsWindow {
-
+	
+	/**
+	 * The window
+	 */
 	private JDialog				dialog;
 
+	/**
+	 * A list of all settings panels
+	 */
 	private List<SettingsPanel>	settingsPanels;
 
+	/**
+	 * The main panel, in which the card will be displayed
+	 */
 	private JPanel				mainPanel;
 
+	/**
+	 * Creates the SettingsWindow on top of the given JFrame
+	 * @param mainFrame The underlying JFrame
+	 */
 	public SettingsWindow(JFrame mainFrame) {
 		settingsPanels = new ArrayList<SettingsPanel>();
 		dialog = new JDialog(mainFrame, "Settings", true);
@@ -80,11 +100,19 @@ public class SettingsWindow {
 		dialog.setVisible(true);
 	}
 
+	/**
+	 * Registers a new SettingsPanel
+	 * @param panel
+	 * @param identifier
+	 */
 	private void addSettingsPanel(SettingsPanel panel, String identifier) {
 		mainPanel.add(panel, identifier);
 		settingsPanels.add(panel);
 	}
 
+	/**
+	 * Tells all SettingsPanels to load their settings from the settings file
+	 */
 	private void load() {
 		Settings.loadSettings();
 		for (SettingsPanel panel : settingsPanels) {
@@ -92,6 +120,9 @@ public class SettingsWindow {
 		}
 	}
 
+	/**
+	 * Tells all SettingsPanels to save their settings to the settings file
+	 */
 	private void save() {
 		for (SettingsPanel panel : settingsPanels) {
 			panel.saveSettings();
