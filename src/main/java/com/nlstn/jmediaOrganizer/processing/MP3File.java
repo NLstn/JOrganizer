@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
@@ -114,6 +115,10 @@ public class MP3File {
 		this.file = file;
 	}
 
+	public MP3File() {
+		id3Tag = new ID3v24Tag();
+	}
+
 	public boolean loadMp3Data() {
 		try {
 			mp3File = new Mp3File(file);
@@ -163,7 +168,6 @@ public class MP3File {
 		}
 		else
 			if (mp3File.hasId3v1Tag()) {
-				// TODO: convert existing tags
 				ID3v1 v1Tags = mp3File.getId3v1Tag();
 				id3Tag = new ID3v24Tag();
 				id3Tag.setTitle(v1Tags.getTitle());
@@ -198,6 +202,8 @@ public class MP3File {
 	}
 
 	public String getExtension() {
+		if (file == null)
+			return ".mp3";
 		return file.getName().substring(file.getName().lastIndexOf('.'));
 	}
 
@@ -205,36 +211,72 @@ public class MP3File {
 		return id3Tag.getTitle() != null ? id3Tag.getTitle() : "";
 	}
 
+	public void setTitle(String title) {
+		id3Tag.setTitle(title);
+	}
+
 	public String getArtist() {
 		return id3Tag.getArtist() != null ? id3Tag.getArtist() : "";
+	}
+
+	public void setArtist(String artist) {
+		id3Tag.setArtist(artist);
 	}
 
 	public String getAlbum() {
 		return id3Tag.getAlbum() != null ? id3Tag.getAlbum() : "";
 	}
 
+	public void setAlbum(String album) {
+		id3Tag.setAlbum(album);
+	}
+
 	public String getTrack() {
 		return id3Tag.getTrack() != null ? id3Tag.getTrack() : "";
+	}
+
+	public void setTrack(String track) {
+		id3Tag.setTrack(track);
 	}
 
 	public String getAlbumArtist() {
 		return id3Tag.getAlbumArtist() != null ? id3Tag.getAlbumArtist() : "";
 	}
 
+	public void setAlbumArtist(String albumArtist) {
+		id3Tag.setAlbumArtist(albumArtist);
+	}
+
 	public String getBPM() {
 		return String.valueOf(id3Tag.getBPM());
+	}
+
+	public void setBPM(int bpm) {
+		id3Tag.setBPM(bpm);
 	}
 
 	public String getComposer() {
 		return id3Tag.getComposer() != null ? id3Tag.getComposer() : "";
 	}
 
+	public void setComposer(String composer) {
+		id3Tag.setComposer(composer);
+	}
+
 	public String getDate() {
 		return id3Tag.getDate() != null ? id3Tag.getDate() : "";
 	}
 
+	public void setDate(String date) {
+		id3Tag.setDate(date);
+	}
+
 	public String getGenre() {
 		return genreMapping.get(id3Tag.getGenre()) != null ? genreMapping.get(id3Tag.getGenre()) : "";
+	}
+
+	public void setGenre(String genre) {
+		id3Tag.setGenre(genreMapping.entrySet().stream().filter(entry -> entry.getValue().equals(genre)).collect(Collectors.toList()).get(0).getKey());
 	}
 
 	public String getLength() {
@@ -245,4 +287,7 @@ public class MP3File {
 		return id3Tag.getYear() != null ? id3Tag.getYear() : "";
 	}
 
+	public void setYear(String year) {
+		id3Tag.setYear(year);
+	}
 }

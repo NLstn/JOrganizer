@@ -27,6 +27,8 @@ public class FileProcessor {
 
 	private static Logger		logger;
 
+	private static MP3File		example;
+
 	public static List<File> loadAllFiles() {
 		currentFiles = new ArrayList<File>();
 		loadAllFilesRec(JMediaOrganizer.getInputFolder());
@@ -115,12 +117,25 @@ public class FileProcessor {
 	}
 
 	public static MP3File getPreviewExample() {
-		if (currentFiles == null || currentFiles.size() == 0)
-			return null;
-		MP3File example = new MP3File(currentFiles.get(0));
-		if (!example.loadMp3Data())
-			return null;
-		return example;
+		if(currentFiles != null) {
+			MP3File example = new MP3File(currentFiles.get(0));
+			if (example.loadMp3Data())
+				return example;			
+		}
+		if (FileProcessor.example == null) {
+			example = new MP3File();
+			example.setTitle("Iridescent");
+			example.setAlbum("A Thousand Sunds");
+			example.setTrack("12");
+			example.setArtist("Linkin Park");
+			example.setAlbumArtist("Linkin Park");
+			example.setBPM(120);
+			example.setGenre("Rock");
+			example.setYear("2010");
+			example.setDate("8. Sep 2010");
+			example.setComposer("Warner Bros. Records");
+		}
+		return FileProcessor.example;
 	}
 
 	public static int getFileCount() {
