@@ -11,7 +11,7 @@ import java.util.concurrent.FutureTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nlstn.jmediaOrganizer.ID3ToNameConverter;
+import com.nlstn.jmediaOrganizer.Converter;
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.Settings;
 
@@ -55,10 +55,8 @@ public class FileProcessor {
 
 		int amountPerThread = currentFiles.size() / threadCount;
 
-		ID3ToNameConverter converter = new ID3ToNameConverter();
-
 		for (int i = 0; i < threadCount; i++) {
-			ConversionPreviewCallable callable = new ConversionPreviewCallable(converter, i * amountPerThread, amountPerThread, currentFiles);
+			ConversionPreviewCallable callable = new ConversionPreviewCallable(i * amountPerThread, amountPerThread, currentFiles);
 			callables.add(callable);
 			FutureTask<List<String>> task = new FutureTask<List<String>>(callable);
 			futureTasks.add(task);
@@ -104,14 +102,13 @@ public class FileProcessor {
 	}
 
 	public static void convertFiles() {
-		ID3ToNameConverter converter = new ID3ToNameConverter();
 		for (File file : currentFiles) {
 			MP3File mp3File = new MP3File(file);
 			if (mp3File.deleteIfOfType(ConversionPreviewCallable.invalidTypes)) {
 				continue;
 			}
 			if (mp3File.loadMp3Data()) {
-				mp3File.moveToLocation(converter.getNewPath(mp3File));
+				mp3File.moveToLocation(Converter.getNewPath(mp3File));
 			}
 			file.delete();
 		}

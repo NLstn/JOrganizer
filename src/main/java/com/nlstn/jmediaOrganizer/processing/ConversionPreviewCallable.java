@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.nlstn.jmediaOrganizer.ID3ToNameConverter;
+import com.nlstn.jmediaOrganizer.Converter;
 
 public class ConversionPreviewCallable implements Callable<List<String>> {
 
@@ -25,16 +25,13 @@ public class ConversionPreviewCallable implements Callable<List<String>> {
 		invalidTypes.add(".pls");
 	}
 
-	private int					startIndex;
-	private List<File>			files;
-	private int					amount;
+	private int				startIndex;
+	private List<File>		files;
+	private int				amount;
 
-	private ID3ToNameConverter	converter;
+	private volatile int	progress;
 
-	private volatile int		progress;
-
-	public ConversionPreviewCallable(ID3ToNameConverter converter, int startIndex, int amount, List<File> files) {
-		this.converter = converter;
+	public ConversionPreviewCallable(int startIndex, int amount, List<File> files) {
 		this.startIndex = startIndex;
 		this.amount = amount;
 		this.files = files;
@@ -45,7 +42,7 @@ public class ConversionPreviewCallable implements Callable<List<String>> {
 		for (int i = startIndex; i < startIndex + amount; i++) {
 			MP3File mp3File = new MP3File(files.get(i));
 			if (!mp3File.isOfType(invalidTypes) && mp3File.loadMp3Data())
-				result.add(converter.getNewPath(mp3File));
+				result.add(Converter.getNewPath(mp3File));
 			progress++;
 		}
 		return result;

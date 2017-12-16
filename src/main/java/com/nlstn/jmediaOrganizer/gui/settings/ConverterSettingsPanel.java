@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.nlstn.jmediaOrganizer.Converter;
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 import com.nlstn.jmediaOrganizer.processing.MP3File;
@@ -32,10 +33,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 
 	private JScrollPane			scrollExample;
 
-	private String				exampleArtist		= "Linkin Park";
-	private String				exampleAlbum		= "A Thousand Suns";
-	private String				exampleTrack		= "12";
-	private String				exampleTitle		= "Iridescent";
+	private MP3File				preview;
 
 	public ConverterSettingsPanel() {
 
@@ -87,9 +85,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		});
 		add(txtPattern);
 
-		MP3File preview = FileProcessor.getPreviewExample();
-		if (preview != null)
-			setPreviewData(preview.getTrack(), preview.getTitle(), preview.getArtist(), preview.getAlbum());
+		preview = FileProcessor.getPreviewExample();
 
 		loadSettings();
 
@@ -116,24 +112,17 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		Settings.save();
 	}
 
-	public void setPreviewData(String track, String title, String artist, String album) {
-		exampleTrack = track;
-		exampleTitle = title;
-		exampleArtist = artist;
-		exampleAlbum = album;
-	}
-
 	private String buildPreview() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Track (%track%):\t").append(exampleTrack).append("\n");
-		builder.append("Title (%title%):\t").append(exampleTitle).append("\n");
-		builder.append("Artist (%artist%):\t").append(exampleArtist).append("\n");
-		builder.append("Album (%album%):\t").append(exampleAlbum).append("\n");
+		builder.append("Track (%track%):\t").append(preview.getTrack()).append("\n");
+		builder.append("Title (%title%):\t").append(preview.getTitle()).append("\n");
+		builder.append("Artist (%artist%):\t").append(preview.getArtist()).append("\n");
+		builder.append("Album (%album%):\t").append(preview.getAlbum()).append("\n");
 		builder.append("\n");
 		StringBuilder previewLine = new StringBuilder();
 		previewLine.append("Preview:\n");
 		if (txtPattern.getText() != null && !txtPattern.getText().equals("")) {
-			String pattern = txtPattern.getText().replace("%track%", exampleTrack).replace("%title%", exampleTitle).replace("%artist%", exampleArtist).replace("%album%", exampleAlbum).replace("%output%", Settings.getOutputFolder()).replace("%extension%", ".mp3");
+			String pattern = Converter.getNewPath(preview, txtPattern.getText());
 			previewLine.append(pattern);
 		}
 		Graphics g = lblExample.getGraphics();
