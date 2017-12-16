@@ -25,6 +25,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.converters.ID3ToNameConverterWindow;
+import com.nlstn.jmediaOrganizer.gui.settings.SettingsWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 import com.nlstn.jmediaOrganizer.processing.MP3File;
 
