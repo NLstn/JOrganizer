@@ -77,7 +77,7 @@ public class SettingsWindow {
 		ConverterSettingsPanel converterSettingsPanel = new ConverterSettingsPanel();
 		addSettingsPanel(converterSettingsPanel, "converter");
 
-		layout.show(mainPanel, "main");
+		layout.show(mainPanel, "converter");
 
 		dialog.getContentPane().add(mainPanel);
 

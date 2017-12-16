@@ -1,6 +1,8 @@
 package com.nlstn.jmediaOrganizer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.nlstn.jmediaOrganizer.processing.MP3File;
@@ -16,22 +18,28 @@ import com.nlstn.jmediaOrganizer.processing.MP3File;
  */
 public class Converter {
 
-	private static List<String> availableVariables;
+	private static List<ConverterVariable> availableVariables;
 
 	static {
-		availableVariables = new ArrayList<String>();
-		availableVariables.add("%output%");
-		availableVariables.add("%extension%");
-		availableVariables.add("%artist%");
-		availableVariables.add("%track%");
-		availableVariables.add("%album%");
-		availableVariables.add("%albumArtist%");
-		availableVariables.add("%bpm%");
-		availableVariables.add("%composer%");
-		availableVariables.add("%date%");
-		availableVariables.add("%length%");
-		availableVariables.add("%yeart%");
-		availableVariables.add("%title%");
+		availableVariables = new ArrayList<ConverterVariable>();
+		availableVariables.add(new ConverterVariable("Output Folder", "%output%"));
+		availableVariables.add(new ConverterVariable("File Extension", "%extension%"));
+		availableVariables.add(new ConverterVariable("Artist", "%artist%"));
+		availableVariables.add(new ConverterVariable("Track Nr", "%track%"));
+		availableVariables.add(new ConverterVariable("Album", "%album%"));
+		availableVariables.add(new ConverterVariable("Album Artist", "%albumArtist%"));
+		availableVariables.add(new ConverterVariable("BPM", "%bpm%"));
+		availableVariables.add(new ConverterVariable("Composer", "%composer%"));
+		availableVariables.add(new ConverterVariable("Date", "%date%"));
+		availableVariables.add(new ConverterVariable("Length", "%length%"));
+		availableVariables.add(new ConverterVariable("Year", "%year%"));
+		availableVariables.add(new ConverterVariable("Title", "%title%"));
+
+		Collections.sort(availableVariables, new Comparator<ConverterVariable>() {
+			public int compare(ConverterVariable o1, ConverterVariable o2) {
+				return o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName());
+			}
+		});
 	}
 
 	/**
@@ -61,5 +69,9 @@ public class Converter {
 		pattern = pattern.replace("%title%", file.getTitle());
 
 		return pattern;
+	}
+
+	public static List<ConverterVariable> getVariables() {
+		return availableVariables;
 	}
 }

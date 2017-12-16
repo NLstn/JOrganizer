@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -15,9 +16,12 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 import com.nlstn.jmediaOrganizer.Converter;
+import com.nlstn.jmediaOrganizer.ConverterVariable;
 import com.nlstn.jmediaOrganizer.Settings;
+import com.nlstn.jmediaOrganizer.gui.VariableComboBoxModel;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 import com.nlstn.jmediaOrganizer.processing.MP3File;
 
@@ -63,8 +67,15 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		lblPattern.setBounds(10, 197, 50, 28);
 		add(lblPattern);
 
+		JComboBox<ConverterVariable> comboBox = new JComboBox<ConverterVariable>(new VariableComboBoxModel());
+		comboBox.setBounds(70, 197, 150, 28);
+		comboBox.addActionListener((ActionEvent e) -> {
+			appendVariable((ConverterVariable) comboBox.getSelectedItem());
+		});
+		add(comboBox);
+
 		txtPattern = new JTextField();
-		txtPattern.setBounds(70, 197, 460, 28);
+		txtPattern.setBounds(10, 230, 460, 28);
 		txtPattern.getDocument().addDocumentListener(new DocumentListener() {
 
 			public void insertUpdate(DocumentEvent e) {
@@ -93,6 +104,15 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		lblExample.setCaretPosition(0);
 
 		setVisible(true);
+	}
+
+	private void appendVariable(ConverterVariable variable) {
+		try {
+			txtPattern.getDocument().insertString(txtPattern.getCaretPosition(), variable.getVariable(), null);
+		}
+		catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void onToggleEnabled() {

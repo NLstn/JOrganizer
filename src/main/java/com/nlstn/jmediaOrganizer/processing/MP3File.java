@@ -202,23 +202,23 @@ public class MP3File {
 	}
 
 	public String getTitle() {
-		return id3Tag.getTitle();
+		return id3Tag.getTitle() != null ? id3Tag.getTitle() : "";
 	}
 
 	public String getArtist() {
-		return id3Tag.getArtist();
+		return id3Tag.getArtist() != null ? id3Tag.getArtist() : "";
 	}
 
 	public String getAlbum() {
-		return id3Tag.getAlbum();
+		return id3Tag.getAlbum() != null ? id3Tag.getAlbum() : "";
 	}
 
 	public String getTrack() {
-		return id3Tag.getTrack();
+		return id3Tag.getTrack() != null ? id3Tag.getTrack() : "";
 	}
 
 	public String getAlbumArtist() {
-		return id3Tag.getAlbumArtist();
+		return id3Tag.getAlbumArtist() != null ? id3Tag.getAlbumArtist() : "";
 	}
 
 	public String getBPM() {
@@ -226,15 +226,15 @@ public class MP3File {
 	}
 
 	public String getComposer() {
-		return id3Tag.getComposer();
+		return id3Tag.getComposer() != null ? id3Tag.getComposer() : "";
 	}
 
 	public String getDate() {
-		return id3Tag.getDate();
+		return id3Tag.getDate() != null ? id3Tag.getDate() : "";
 	}
 
 	public String getGenre() {
-		return genreMapping.get(id3Tag.getGenre());
+		return genreMapping.get(id3Tag.getGenre()) != null ? genreMapping.get(id3Tag.getGenre()) : "";
 	}
 
 	public String getLength() {
@@ -242,7 +242,7 @@ public class MP3File {
 	}
 
 	public String getYear() {
-		return id3Tag.getYear();
+		return id3Tag.getYear() != null ? id3Tag.getYear() : "";
 	}
 
 }
