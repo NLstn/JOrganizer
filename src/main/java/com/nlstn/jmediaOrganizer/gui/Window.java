@@ -24,10 +24,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.Settings;
-import com.nlstn.jmediaOrganizer.gui.converters.ID3ToNameConverterWindow;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
-import com.nlstn.jmediaOrganizer.processing.MP3File;
 
 /**
  * This class represents the main window.<br>
@@ -174,14 +172,6 @@ public class Window {
 
 		menuBar.add(action);
 
-		JMenu converters = new JMenu("Converters");
-
-		JMenuItem itmID3ToName = new JMenuItem("ID3Tag -> Filename Converter");
-		itmID3ToName.addActionListener((ActionEvent e) -> openId3ToNameConverter());
-		converters.add(itmID3ToName);
-
-		menuBar.add(converters);
-
 		return menuBar;
 	}
 
@@ -192,14 +182,6 @@ public class Window {
 			return;
 		JMediaOrganizer.setInputFolder(folder);
 		reloadInputFolder();
-	}
-
-	/**
-	 * Called when the ID3ToName converter is being opened from the menu bar.
-	 */
-	private void openId3ToNameConverter() {
-		MP3File preview = FileProcessor.getPreviewExample();
-		new ID3ToNameConverterWindow(frame, preview);
 	}
 
 	private void getConversionPreview() {
@@ -233,3 +215,4 @@ public class Window {
 		return frame;
 	}
 }
+

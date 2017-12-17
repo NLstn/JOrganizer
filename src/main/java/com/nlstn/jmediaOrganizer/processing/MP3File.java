@@ -2,7 +2,10 @@ package com.nlstn.jmediaOrganizer.processing;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
@@ -17,6 +20,92 @@ import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 
 public class MP3File {
 
+	private static Map<Integer, String> genreMapping;
+
+	static {
+		genreMapping = new HashMap<Integer, String>();
+		genreMapping.put(0, "Blues");
+		genreMapping.put(1, "Classic Rock");
+		genreMapping.put(2, "Country");
+		genreMapping.put(3, "Dance");
+		genreMapping.put(4, "Disco");
+		genreMapping.put(5, "Funk");
+		genreMapping.put(6, "Grunge");
+		genreMapping.put(7, "Hip-Hop");
+		genreMapping.put(8, "Jazz");
+		genreMapping.put(9, "Metal");
+		genreMapping.put(10, "New Age");
+		genreMapping.put(11, "Oldies");
+		genreMapping.put(12, "Other");
+		genreMapping.put(13, "Pop");
+		genreMapping.put(14, "R&B");
+		genreMapping.put(15, "Rap");
+		genreMapping.put(16, "Reggae");
+		genreMapping.put(17, "Rock");
+		genreMapping.put(18, "Techno");
+		genreMapping.put(19, "Industrial");
+		genreMapping.put(20, "Alternative");
+		genreMapping.put(21, "Ska");
+		genreMapping.put(22, "Death Metal");
+		genreMapping.put(23, "Pranks");
+		genreMapping.put(24, "Soundtrack");
+		genreMapping.put(25, "Euro-Techno");
+		genreMapping.put(26, "Ambient");
+		genreMapping.put(27, "Trip-Hop");
+		genreMapping.put(28, "Vocal");
+		genreMapping.put(29, "Jazz+Funk");
+		genreMapping.put(30, "Fusion");
+		genreMapping.put(31, "Trance");
+		genreMapping.put(32, "Classical");
+		genreMapping.put(33, "Instrumental");
+		genreMapping.put(34, "Acid");
+		genreMapping.put(35, "House");
+		genreMapping.put(36, "Game");
+		genreMapping.put(37, "Sound Clip");
+		genreMapping.put(38, "Gospel");
+		genreMapping.put(39, "Noise");
+		genreMapping.put(40, "AlternRock");
+		genreMapping.put(41, "Bass");
+		genreMapping.put(42, "Soul");
+		genreMapping.put(43, "Punk");
+		genreMapping.put(44, "Space");
+		genreMapping.put(45, "Meditative");
+		genreMapping.put(46, "Instrumental Pop");
+		genreMapping.put(47, "Instrumental Rock");
+		genreMapping.put(48, "Ethnic");
+		genreMapping.put(49, "Gothic");
+		genreMapping.put(50, "Darkwave");
+		genreMapping.put(51, "Techno-Industrial");
+		genreMapping.put(52, "Electronic");
+		genreMapping.put(53, "Pop-Folk");
+		genreMapping.put(54, "Eurodance");
+		genreMapping.put(55, "Dream");
+		genreMapping.put(56, "Southern Rock");
+		genreMapping.put(57, "Comedy");
+		genreMapping.put(58, "Cult");
+		genreMapping.put(59, "Gangsta");
+		genreMapping.put(60, "Top 40");
+		genreMapping.put(61, "Christian Rap");
+		genreMapping.put(62, "Pop/Funk");
+		genreMapping.put(63, "Jungle");
+		genreMapping.put(64, "Native American");
+		genreMapping.put(65, "Cabaret");
+		genreMapping.put(66, "New Wave");
+		genreMapping.put(67, "Psychadelic");
+		genreMapping.put(68, "Rave");
+		genreMapping.put(69, "Showtunes");
+		genreMapping.put(70, "Trailer");
+		genreMapping.put(71, "Lo-Fi");
+		genreMapping.put(72, "Tribal");
+		genreMapping.put(73, "Acid Punk");
+		genreMapping.put(74, "Acid Jazz");
+		genreMapping.put(75, "Polka");
+		genreMapping.put(76, "Retro");
+		genreMapping.put(77, "Musical");
+		genreMapping.put(78, "Rock & Roll");
+		genreMapping.put(79, "Hard Rock");
+	}
+
 	private File	file;
 	private Mp3File	mp3File;
 
@@ -24,6 +113,10 @@ public class MP3File {
 
 	public MP3File(File file) {
 		this.file = file;
+	}
+
+	public MP3File() {
+		id3Tag = new ID3v24Tag();
 	}
 
 	public boolean loadMp3Data() {
@@ -75,7 +168,6 @@ public class MP3File {
 		}
 		else
 			if (mp3File.hasId3v1Tag()) {
-				// TODO: convert existing tags
 				ID3v1 v1Tags = mp3File.getId3v1Tag();
 				id3Tag = new ID3v24Tag();
 				id3Tag.setTitle(v1Tags.getTitle());
@@ -110,23 +202,92 @@ public class MP3File {
 	}
 
 	public String getExtension() {
+		if (file == null)
+			return ".mp3";
 		return file.getName().substring(file.getName().lastIndexOf('.'));
 	}
 
 	public String getTitle() {
-		return id3Tag.getTitle();
+		return id3Tag.getTitle() != null ? id3Tag.getTitle() : "";
+	}
+
+	public void setTitle(String title) {
+		id3Tag.setTitle(title);
 	}
 
 	public String getArtist() {
-		return id3Tag.getArtist();
+		return id3Tag.getArtist() != null ? id3Tag.getArtist() : "";
+	}
+
+	public void setArtist(String artist) {
+		id3Tag.setArtist(artist);
 	}
 
 	public String getAlbum() {
-		return id3Tag.getAlbum();
+		return id3Tag.getAlbum() != null ? id3Tag.getAlbum() : "";
+	}
+
+	public void setAlbum(String album) {
+		id3Tag.setAlbum(album);
 	}
 
 	public String getTrack() {
-		return id3Tag.getTrack();
+		return id3Tag.getTrack() != null ? id3Tag.getTrack() : "";
 	}
 
+	public void setTrack(String track) {
+		id3Tag.setTrack(track);
+	}
+
+	public String getAlbumArtist() {
+		return id3Tag.getAlbumArtist() != null ? id3Tag.getAlbumArtist() : "";
+	}
+
+	public void setAlbumArtist(String albumArtist) {
+		id3Tag.setAlbumArtist(albumArtist);
+	}
+
+	public String getBPM() {
+		return String.valueOf(id3Tag.getBPM());
+	}
+
+	public void setBPM(int bpm) {
+		id3Tag.setBPM(bpm);
+	}
+
+	public String getComposer() {
+		return id3Tag.getComposer() != null ? id3Tag.getComposer() : "";
+	}
+
+	public void setComposer(String composer) {
+		id3Tag.setComposer(composer);
+	}
+
+	public String getDate() {
+		return id3Tag.getDate() != null ? id3Tag.getDate() : "";
+	}
+
+	public void setDate(String date) {
+		id3Tag.setDate(date);
+	}
+
+	public String getGenre() {
+		return genreMapping.get(id3Tag.getGenre()) != null ? genreMapping.get(id3Tag.getGenre()) : "";
+	}
+
+	public void setGenre(String genre) {
+		id3Tag.setGenre(genreMapping.entrySet().stream().filter(entry -> entry.getValue().equals(genre)).collect(Collectors.toList()).get(0).getKey());
+	}
+
+	public String getLength() {
+		return String.valueOf(id3Tag.getLength());
+	}
+
+	public String getYear() {
+		return id3Tag.getYear() != null ? id3Tag.getYear() : "";
+	}
+
+	public void setYear(String year) {
+		id3Tag.setYear(year);
+	}
 }

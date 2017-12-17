@@ -11,6 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.JTree.DynamicUtilTreeNode;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -60,9 +61,8 @@ public class SettingsWindow {
 		});
 
 		Hashtable<String, String> settingPanels = new Hashtable<String, String>();
-		settingPanels.put("Settings", "main");
-		settingPanels.put("Test", "test");
-		settingPanels.put("Test2", "test2");
+		settingPanels.put("Settings", "settings");
+		settingPanels.put("Converter", "converter");
 
 		JTree tree = new JTree(settingPanels);
 		tree.setBounds(10, 10, 200, 445);
@@ -72,16 +72,19 @@ public class SettingsWindow {
 		mainPanel.setBounds(220, 10, 620, 530);
 
 		MainSettingsPanel mainSettingsPanel = new MainSettingsPanel();
-		addSettingsPanel(mainSettingsPanel, "main");
+		addSettingsPanel(mainSettingsPanel, "settings");
 
-		layout.show(mainPanel, "main");
+		ConverterSettingsPanel converterSettingsPanel = new ConverterSettingsPanel();
+		addSettingsPanel(converterSettingsPanel, "converter");
+
+		layout.show(mainPanel, "converter");
 
 		dialog.getContentPane().add(mainPanel);
 
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
 			public void valueChanged(TreeSelectionEvent e) {
-				layout.show(mainPanel, e.getPath().toString());
+				layout.show(mainPanel, ((DynamicUtilTreeNode) tree.getLastSelectedPathComponent()).toString().toLowerCase());
 			}
 
 		});
