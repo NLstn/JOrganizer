@@ -21,7 +21,7 @@ import javax.swing.text.BadLocationException;
 import com.nlstn.jmediaOrganizer.Converter;
 import com.nlstn.jmediaOrganizer.ConverterVariable;
 import com.nlstn.jmediaOrganizer.Settings;
-import com.nlstn.jmediaOrganizer.gui.VariableComboBoxModel;
+import com.nlstn.jmediaOrganizer.gui.models.VariableComboBoxModel;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 import com.nlstn.jmediaOrganizer.processing.MP3File;
 

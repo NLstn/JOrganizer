@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer.gui;
+package com.nlstn.jmediaOrganizer.gui.models;
 
 import java.util.List;
 

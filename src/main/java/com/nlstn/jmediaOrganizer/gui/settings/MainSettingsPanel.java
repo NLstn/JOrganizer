@@ -2,29 +2,43 @@ package com.nlstn.jmediaOrganizer.gui.settings;
 
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.DirectoryChooser;
 
 public class MainSettingsPanel extends SettingsPanel {
 
-	private static final long	serialVersionUID	= 6380112269593540681L;
+	private static final long			serialVersionUID	= 6380112269593540681L;
 
-	private TextField			outputFolder;
-	private JComboBox<Integer>	threadCount;
+	private TextField					outputFolder;
+	private JComboBox<Integer>			threadCount;
+	private DefaultListModel<String>	model;
+	private JTextField					field;
+	private List<String>				invalidTypes;
+	private JList<String>				invalidTypeList;
 
 	public MainSettingsPanel() {
 		setLayout(null);
 
-		JLabel lblOutputLabel = new JLabel("Output Folder");
-		lblOutputLabel.setBounds(10, 10, 70, 28);
+		invalidTypes = new ArrayList<String>();
+
+		JLabel lblOutputLabel = new JLabel("Output Folder:");
+		lblOutputLabel.setBounds(10, 10, 80, 28);
 		add(lblOutputLabel);
 
 		outputFolder = new TextField();
@@ -36,8 +50,8 @@ public class MainSettingsPanel extends SettingsPanel {
 		openFolder.setBounds(420, 10, 150, 28);
 		add(openFolder);
 
-		JLabel lblThreadCount = new JLabel("Threadcount");
-		lblThreadCount.setBounds(10, 48, 70, 28);
+		JLabel lblThreadCount = new JLabel("Threadcount:");
+		lblThreadCount.setBounds(10, 48, 80, 28);
 		add(lblThreadCount);
 
 		int cores = Runtime.getRuntime().availableProcessors();
@@ -51,22 +65,90 @@ public class MainSettingsPanel extends SettingsPanel {
 		threadCount = new JComboBox<Integer>(valuesArray);
 		threadCount.setBounds(90, 48, 80, 28);
 		add(threadCount);
+
+		JLabel lblInvalidTypes = new JLabel("Invalid Types:");
+		lblInvalidTypes.setBounds(10, 80, 80, 28);
+		add(lblInvalidTypes);
+
+		field = new JTextField();
+		field.setBounds(90, 80, 80, 28);
+		field.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER)
+					addInvalidType(field.getText());
+			}
+		});
+		add(field);
+
+		model = new DefaultListModel<String>();
+		invalidTypeList = new JList<String>(model);
+		JScrollPane scrollPane = new JScrollPane(invalidTypeList);
+		scrollPane.setBounds(90, 108, 80, 120);
+		add(scrollPane);
+
+		JButton deleteType = new JButton("Delete Type");
+		deleteType.addActionListener((ActionEvent e) -> deleteInvalidType());
+		deleteType.setBounds(175, 80, 120, 28);
+		add(deleteType);
 	}
 
-	public void onOpenDirectoryChooser() {
+	public void loadSettings() {
+		outputFolder.setText(Settings.getOutputFolder());
+		threadCount.setSelectedItem(Settings.getThreadCount());
+		for (String type : Settings.getInvalidTypes()) {
+			model.addElement(type);
+			invalidTypes.add(type);
+		}
+	}
+
+	public void saveSettings() {
+		Settings.setOutputFolder(outputFolder.getText());
+		Settings.setThreadCount((int) threadCount.getSelectedItem());
+		Settings.setInvalidTypes(invalidTypes);
+	}
+
+	private void addInvalidType(String type) {
+		if (type.contains(" "))
+			showInvalidInputDialog("Invalid input!");
+		if (!type.startsWith("."))
+			type = "." + type;
+		if (!invalidTypes.contains(type)) {
+			invalidTypes.add(type);
+			rebuildInvalidTypesList();
+		}
+		else {
+			showInvalidInputDialog("Type is already in list!");
+		}
+		field.setText("");
+	}
+
+	private void deleteInvalidType() {
+		int[] indices = invalidTypeList.getSelectedIndices();
+
+		int index = indices.length - 1;
+
+		while (index >= 0) { // also checking if the list is empty
+			invalidTypes.remove(indices[index--]);
+		}
+		rebuildInvalidTypesList();
+	}
+
+	private void onOpenDirectoryChooser() {
 		DirectoryChooser chooser = new DirectoryChooser(getParent());
 		File folder = chooser.getSelectedDirectory();
 		if (folder != null)
 			outputFolder.setText(folder.getAbsolutePath());
 	}
 
-	public void loadSettings() {
-		outputFolder.setText(Settings.getOutputFolder());
-		threadCount.setSelectedItem(Settings.getThreadCount());
+	private void showInvalidInputDialog(String message) {
+		JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
 	}
 
-	public void saveSettings() {
-		Settings.setOutputFolder(outputFolder.getText());
-		Settings.setThreadCount((int) threadCount.getSelectedItem());
+	private void rebuildInvalidTypesList() { // model is cleared to maintain the alphabetical order of the list
+		Collections.sort(invalidTypes);
+		model.clear();
+		for (String invalidType : invalidTypes) {
+			model.addElement(invalidType);
+		}
 	}
 }

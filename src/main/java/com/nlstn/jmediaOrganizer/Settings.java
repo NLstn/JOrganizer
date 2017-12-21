@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -74,6 +76,21 @@ public class Settings {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to save properties file!", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public static List<String> getInvalidTypes() {
+		String setting = properties.getProperty("invalidTypes", ".png;.jpg;.jpeg;.gif");
+		List<String> invalidTypes = Arrays.asList(setting.split(";"));
+		return invalidTypes;
+	}
+
+	public static void setInvalidTypes(List<String> invalidTypes) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < invalidTypes.size() - 1; i++) {
+			builder.append(invalidTypes.get(i)).append(";");
+		}
+		builder.append(invalidTypes.get(invalidTypes.size() - 1));
+		properties.setProperty("invalidTypes", builder.toString());
 	}
 
 	public static boolean getID3ToNameEnabled() {

@@ -6,30 +6,17 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import com.nlstn.jmediaOrganizer.Converter;
+import com.nlstn.jmediaOrganizer.Settings;
 
 public class ConversionPreviewCallable implements Callable<List<String>> {
 
-	public static List<String> invalidTypes = new ArrayList<String>();
+	public static List<String>	invalidTypes	= Settings.getInvalidTypes();
 
-	static {
-		invalidTypes.add(".nfo");
-		invalidTypes.add(".png");
-		invalidTypes.add(".jpg");
-		invalidTypes.add(".jpeg");
-		invalidTypes.add(".gif");
-		invalidTypes.add(".txt");
-		invalidTypes.add(".m3u");
-		invalidTypes.add(".pdf");
-		invalidTypes.add(".doc");
-		invalidTypes.add(".plc");
-		invalidTypes.add(".pls");
-	}
+	private int					startIndex;
+	private List<File>			files;
+	private int					amount;
 
-	private int				startIndex;
-	private List<File>		files;
-	private int				amount;
-
-	private volatile int	progress;
+	private volatile int		progress;
 
 	public ConversionPreviewCallable(int startIndex, int amount, List<File> files) {
 		this.startIndex = startIndex;
