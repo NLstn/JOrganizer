@@ -22,6 +22,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsWindow;
@@ -44,6 +47,12 @@ import com.nlstn.jmediaOrganizer.processing.FileProcessor;
  */
 public class Window {
 
+	private static Logger log;
+
+	static {
+		log = LogManager.getLogger(Window.class);
+	}
+
 	public static final int	BUTTON_WIDTH	= 150;
 
 	/**
@@ -63,11 +72,12 @@ public class Window {
 	private JTextArea		newValues;
 
 	public Window() {
+		log.debug("Creating main window...");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
+			log.error("Failed to set Look and Feel!", e);
 		}
 		Settings.loadSettings();
 		frame = new JFrame("MusicProcessor");
@@ -112,6 +122,7 @@ public class Window {
 		frame.getContentPane().add(newScrollPane, gbcNewValues);
 
 		frame.setVisible(true);
+		log.debug("Finished building window.");
 	}
 
 	/**
@@ -182,6 +193,7 @@ public class Window {
 			return;
 		JMediaOrganizer.setInputFolder(folder);
 		reloadInputFolder();
+		log.debug("Loaded new folder: " + folder.getAbsolutePath());
 	}
 
 	private void getConversionPreview() {
@@ -215,4 +227,3 @@ public class Window {
 		return frame;
 	}
 }
-

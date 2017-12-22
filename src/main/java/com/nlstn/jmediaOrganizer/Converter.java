@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.nlstn.jmediaOrganizer.processing.MP3File;
 
 /**
@@ -18,6 +21,12 @@ import com.nlstn.jmediaOrganizer.processing.MP3File;
  */
 public class Converter {
 
+	private static Logger log;
+	
+	static {
+		log = LogManager.getLogger(Converter.class);
+	}
+	
 	private static List<ConverterVariable> availableVariables;
 
 	static {
@@ -67,7 +76,9 @@ public class Converter {
 		pattern = pattern.replace("%length%", file.getLength());
 		pattern = pattern.replace("%year%", file.getYear());
 		pattern = pattern.replace("%title%", file.getTitle());
-
+		
+		log.debug("Recalculated: " + file.getPath() + " to " + pattern);
+		
 		return pattern;
 	}
 

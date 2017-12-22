@@ -11,6 +11,9 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This class is used to control settings. Settings are being saved to a file under C:\Users\User\AppData\Roaming\JMediaOrganizer.<br>
  * <br>
@@ -19,6 +22,12 @@ import javax.swing.JOptionPane;
  * @author Niklas Lahnstein
  */
 public class Settings {
+
+	private static Logger log;
+
+	static {
+		log = LogManager.getLogger(Settings.class);
+	}
 
 	/**
 	 * The path, where the config file is.
@@ -49,7 +58,7 @@ public class Settings {
 				propertiesFile.createNewFile();
 			}
 			catch (IOException e) {
-				e.printStackTrace();
+				log.error("Failed to load settings!", e);
 				JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to create properties file!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -58,7 +67,7 @@ public class Settings {
 				properties.load(new FileInputStream(propertiesFile));
 			}
 			catch (IOException e) {
-				e.printStackTrace();
+				log.error("Failed to parse settings!", e);
 				JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to load properties file!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -73,7 +82,7 @@ public class Settings {
 			properties.store(out, "User Properties");
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to save settings!", e);
 			JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to save properties file!", JOptionPane.ERROR_MESSAGE);
 		}
 	}

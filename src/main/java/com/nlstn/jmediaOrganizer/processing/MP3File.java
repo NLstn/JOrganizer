@@ -201,6 +201,10 @@ public class MP3File {
 		return true;
 	}
 
+	public String getPath() {
+		return file == null ? "Undefined" : file.getAbsolutePath();
+	}
+
 	public String getExtension() {
 		if (file == null)
 			return ".mp3";
