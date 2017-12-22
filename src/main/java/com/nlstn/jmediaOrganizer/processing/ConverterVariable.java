@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.processing;
 
 public class ConverterVariable {
 

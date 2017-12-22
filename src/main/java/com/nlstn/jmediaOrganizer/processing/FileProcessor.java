@@ -11,8 +11,8 @@ import java.util.concurrent.FutureTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nlstn.jmediaOrganizer.Converter;
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
+import com.nlstn.jmediaOrganizer.MP3File;
 import com.nlstn.jmediaOrganizer.Settings;
 
 public class FileProcessor {

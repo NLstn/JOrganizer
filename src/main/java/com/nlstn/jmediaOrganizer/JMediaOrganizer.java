@@ -34,6 +34,8 @@ public class JMediaOrganizer {
 
 	public static void main(String[] args) {
 		log.info("Starting JMediaOrganizer");
+		Settings.loadSettings();
+		ProjectProperties.loadProjectProperties();
 		window = new Window();
 	}
 

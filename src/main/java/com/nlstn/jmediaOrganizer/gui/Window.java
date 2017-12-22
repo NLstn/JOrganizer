@@ -26,7 +26,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
-import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 
@@ -79,7 +78,6 @@ public class Window {
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			log.error("Failed to set Look and Feel!", e);
 		}
-		Settings.loadSettings();
 		frame = new JFrame("MusicProcessor");
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

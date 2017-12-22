@@ -5,8 +5,8 @@ import java.util.List;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.event.ListDataListener;
 
-import com.nlstn.jmediaOrganizer.Converter;
-import com.nlstn.jmediaOrganizer.ConverterVariable;
+import com.nlstn.jmediaOrganizer.processing.Converter;
+import com.nlstn.jmediaOrganizer.processing.ConverterVariable;
 
 public class VariableComboBoxModel implements MutableComboBoxModel<ConverterVariable> {
 

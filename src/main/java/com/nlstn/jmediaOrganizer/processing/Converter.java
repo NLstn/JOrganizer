@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.processing;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.processing.MP3File;
 
 /**
