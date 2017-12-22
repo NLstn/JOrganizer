@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
@@ -17,8 +20,24 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
+/**
+ * This class represents a single mp3 file and contains methods for retrieving and manipulating it's id3 tags.<br>
+ * <br>
+ * Creation: 22.12.2017
+ *
+ * @author Niklas Lahnstein
+ */
 public class MP3File {
 
+	private static Logger log;
+
+	static {
+		log = LogManager.getLogger(MP3File.class);
+	}
+
+	/**
+	 * Mapping between the byte representation and the display name of genres, copied from http://id3.org/d3v2.3.0?highlight=(id3v2.3.0.txt)
+	 */
 	private static Map<Integer, String> genreMapping;
 
 	static {
@@ -105,47 +124,95 @@ public class MP3File {
 		genreMapping.put(79, "Hard Rock");
 	}
 
+	/**
+	 * The file where this mp3File is stored
+	 */
 	private File	file;
+
+	/**
+	 * The {@link Mp3File}, which contains id3 information
+	 */
 	private Mp3File	mp3File;
 
+	/**
+	 * The actual {@link ID3v2 ID3 tags}
+	 */
 	private ID3v2	id3Tag;
 
+	/**
+	 * Constructs a new MP3File from the specified file.<br>
+	 * ID3 tags are not loaded within the constructor, an extra call to {@link #loadMp3Data()} is necessary to have this information available.
+	 * 
+	 * @param file
+	 *            The mp3 file
+	 */
 	public MP3File(File file) {
 		this.file = file;
 	}
 
+	/**
+	 * Constructs a new MP3File without an underlying file.<br>
+	 * This is used to generate virtual ID3Tags, for example for the preview in the converter settings pane.
+	 */
 	public MP3File() {
 		id3Tag = new ID3v24Tag();
 	}
 
+	/**
+	 * Loads the physical mp3 file from disc.<br>
+	 * Afterwards, the ID3Tags are being loaded, if there are any.<br>
+	 * If any of these steps fails, either because the file cannot be read, or if the file does not have ID3Tags, this method returns false.
+	 * 
+	 * @return Whether loading the file and it's ID3Tags was successful.
+	 */
 	public boolean loadMp3Data() {
 		try {
 			mp3File = new Mp3File(file);
 		}
 		catch (UnsupportedTagException | InvalidDataException | IOException e) {
-			System.err.println("Unable to load Mp3 data " + file.getAbsolutePath());
+			log.error("Unable to load Mp3 data " + file.getAbsolutePath(), e);
 			return false;
 		}
 		return getId3Tags();
 	}
 
+	/**
+	 * Goes through the given list of types and checks, whether this file is of any of these types.
+	 * 
+	 * @param types
+	 *            The types to check
+	 * @return Whether the list contains the type of this file.
+	 */
 	public boolean isOfType(List<String> types) {
 		return types.contains(getExtension().toLowerCase());
 	}
 
+	/**
+	 * Checks whether this {@link #isOfType(List)} is true, and if so, deletes this file from disc.
+	 * 
+	 * @param types
+	 *            The types to check
+	 * @return Whether or not this file was deleted, based on the outcome of {@link #isOfType(List)} and {@link File#delete()}.
+	 */
 	public boolean deleteIfOfType(List<String> types) {
 		if (types.contains(getExtension().toLowerCase())) {
 			if (!file.delete()) {
-				System.out.println("Failed to delete file " + file.getAbsolutePath());
+				log.error("Failed to delete file " + file.getAbsolutePath());
 			}
 			else {
-				System.out.println("Deleting file " + file.getAbsolutePath());
+				log.error("Deleting file " + file.getAbsolutePath());
 			}
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Tries to create all parent folders of the files new path and move the file there.
+	 * 
+	 * @param newLocation
+	 *            The new location to move the file to.
+	 */
 	public void moveToLocation(String newLocation) {
 		File f = new File(newLocation);
 		File parent = f.getParentFile();
@@ -160,6 +227,24 @@ public class MP3File {
 		}
 	}
 
+	/**
+	 * Tries to load the ID3Tags of this file.<br>
+	 * <br>
+	 * First of all, the file is inspected if it has ID3v1 or ID3v2 tags.<br>
+	 * If the file contains none of both, the method returns.<br>
+	 * If the file contains ID3v1 Tags, it's information is copied into a new ID3v2 instance.<br>
+	 * If the file contains ID3v2 Tags, the method goes onto the next step.<br>
+	 * <br>
+	 * After that, a little fix is being applied: If the artist of the loaded ID3Tag is empty, copy the album artist into the artist.<br>
+	 * The artist is more important for the program than the album artist, so if the artist is empty, this is an attempt to fix it.<br>
+	 * <br>
+	 * Last but not least, the loaded ID3Tags are checked for completeness.<br>
+	 * The mandatory fields are: track, title, album and artist. if any of this fields is missing, the file is marked incomplete.<br>
+	 * <br>
+	 * Only if the ID3Tags are successfully being loaded and are "complete", this method returns true.
+	 * 
+	 * @return Whether the ID3Tags of this file could be loaded and are complete
+	 */
 	private boolean getId3Tags() {
 		id3Tag = null;
 		if (mp3File.hasId3v2Tag()) {
@@ -179,22 +264,18 @@ public class MP3File {
 				id3Tag.setGenreDescription(v1Tags.getGenreDescription());
 				id3Tag.setAlbum(v1Tags.getAlbum());
 				mp3File.setId3v2Tag(id3Tag);
-				System.err.println("Outdated ID3Tags!");
+				mp3File.removeId3v1Tag();
+				log.info("Fixed outdated ID3Tags!");
 			}
 			else {
-				System.err.println("Missing ID3Tags " + file.getAbsolutePath());
+				log.error("Missing ID3Tags " + file.getAbsolutePath());
 				return false;
 			}
 		if (id3Tag.getArtist() == null) {
-			try {
-				id3Tag.setArtist(((ID3v2) id3Tag).getAlbumArtist());
-			}
-			catch (Exception e) {
-
-			}
+			id3Tag.setArtist(((ID3v2) id3Tag).getAlbumArtist());
 		}
-		if (id3Tag.getAlbum() == null || id3Tag.getAlbum() == "" || id3Tag.getTitle() == null || id3Tag.getTitle() == "" || id3Tag.getTrack() == null || id3Tag.getTrack() == "") {
-			System.err.println("Missing ID3Tags " + file.getAbsolutePath());
+		if (id3Tag.getArtist() == null || id3Tag.getArtist() == "" || id3Tag.getAlbum() == null || id3Tag.getAlbum() == "" || id3Tag.getTitle() == null || id3Tag.getTitle() == "" || id3Tag.getTrack() == null || id3Tag.getTrack() == "") {
+			log.error("Missing ID3Tags " + file.getAbsolutePath());
 			return false;
 		}
 		return true;
