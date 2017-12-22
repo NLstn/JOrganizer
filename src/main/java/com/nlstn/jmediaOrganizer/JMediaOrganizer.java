@@ -21,9 +21,12 @@ public class JMediaOrganizer {
 	/**
 	 * The currently chosen input folder, or null, if no input folder was chosen
 	 */
-	private static File		inputFolder		= null;
+	private static File		inputFolder	= null;
 
 	public static void main(String[] args) {
+		Settings.loadSettings();
+		ProjectProperties.loadProjectProperties();
+		System.out.println(ProjectProperties.getVersion());
 		window = new Window();
 	}
 
