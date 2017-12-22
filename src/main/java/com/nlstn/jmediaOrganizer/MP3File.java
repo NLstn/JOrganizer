@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer.processing;
+package com.nlstn.jmediaOrganizer;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 
 public class MP3File {
 
