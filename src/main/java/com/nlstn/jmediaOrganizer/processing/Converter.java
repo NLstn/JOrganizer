@@ -1,11 +1,12 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.processing;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.nlstn.jmediaOrganizer.processing.MP3File;
+import com.nlstn.jmediaOrganizer.MP3File;
+import com.nlstn.jmediaOrganizer.Settings;
 
 /**
  * Converter, to set the new path + filename of the file after processing.<br>

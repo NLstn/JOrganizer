@@ -23,7 +23,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
-import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsWindow;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 
@@ -69,7 +68,6 @@ public class Window {
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		Settings.loadSettings();
 		frame = new JFrame("MusicProcessor");
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -215,4 +213,3 @@ public class Window {
 		return frame;
 	}
 }
-

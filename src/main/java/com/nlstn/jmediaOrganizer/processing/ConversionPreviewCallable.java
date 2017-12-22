@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.nlstn.jmediaOrganizer.Converter;
+import com.nlstn.jmediaOrganizer.MP3File;
 import com.nlstn.jmediaOrganizer.Settings;
 
 public class ConversionPreviewCallable implements Callable<List<String>> {
