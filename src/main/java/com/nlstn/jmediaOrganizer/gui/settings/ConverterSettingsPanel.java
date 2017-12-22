@@ -76,32 +76,9 @@ public class ConverterSettingsPanel extends SettingsPanel {
 
 		txtPattern = new JTextField();
 		txtPattern.setBounds(10, 230, 460, 28);
-		txtPattern.getDocument().addDocumentListener(new DocumentListener() {
-
-			public void insertUpdate(DocumentEvent e) {
-				lblExample.setText(buildPreview());
-				lblExample.setCaretPosition(0);
-			}
-
-			public void removeUpdate(DocumentEvent e) {
-				lblExample.setText(buildPreview());
-				lblExample.setCaretPosition(0);
-			}
-
-			public void changedUpdate(DocumentEvent e) {
-				lblExample.setText(buildPreview());
-				lblExample.setCaretPosition(0);
-			}
-
-		});
 		add(txtPattern);
 
 		preview = FileProcessor.getPreviewExample();
-
-		loadSettings();
-
-		lblExample.setText(buildPreview());
-		lblExample.setCaretPosition(0);
 
 		setVisible(true);
 	}
@@ -124,12 +101,36 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		chkEnabled.setSelected(Settings.getID3ToNameEnabled());
 		txtPattern.setText(Settings.getID3ToNamePattern());
 		onToggleEnabled();
+		lblExample.setText(buildPreview());
+		lblExample.setCaretPosition(0);
+		addActionListeners();
 	}
 
 	public void saveSettings() {
 		Settings.setID3ToNameEnabled(chkEnabled.isSelected());
 		Settings.setID3ToNamePattern(txtPattern.getText());
 		Settings.save();
+	}
+
+	private void addActionListeners() {
+		txtPattern.getDocument().addDocumentListener(new DocumentListener() {
+
+			public void insertUpdate(DocumentEvent e) {
+				lblExample.setText(buildPreview());
+				lblExample.setCaretPosition(0);
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				lblExample.setText(buildPreview());
+				lblExample.setCaretPosition(0);
+			}
+
+			public void changedUpdate(DocumentEvent e) {
+				lblExample.setText(buildPreview());
+				lblExample.setCaretPosition(0);
+			}
+
+		});
 	}
 
 	private String buildPreview() {
