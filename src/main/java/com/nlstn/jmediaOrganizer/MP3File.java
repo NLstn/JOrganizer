@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.processing;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 
 public class MP3File {
 
@@ -198,6 +199,10 @@ public class MP3File {
 			return false;
 		}
 		return true;
+	}
+
+	public String getPath() {
+		return file == null ? "Undefined" : file.getAbsolutePath();
 	}
 
 	public String getExtension() {

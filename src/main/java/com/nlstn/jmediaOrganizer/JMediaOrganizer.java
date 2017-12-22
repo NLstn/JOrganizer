@@ -2,6 +2,9 @@ package com.nlstn.jmediaOrganizer;
 
 import java.io.File;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.nlstn.jmediaOrganizer.gui.Window;
 
 /**
@@ -12,6 +15,12 @@ import com.nlstn.jmediaOrganizer.gui.Window;
  * @author Niklas Lahnstein
  */
 public class JMediaOrganizer {
+
+	private static Logger log;
+
+	static {
+		log = LogManager.getLogger(JMediaOrganizer.class);
+	}
 
 	/**
 	 * The reference to the main window
@@ -24,9 +33,9 @@ public class JMediaOrganizer {
 	private static File		inputFolder	= null;
 
 	public static void main(String[] args) {
+		log.info("Starting JMediaOrganizer");
 		Settings.loadSettings();
 		ProjectProperties.loadProjectProperties();
-		System.out.println(ProjectProperties.getVersion());
 		window = new Window();
 	}
 
