@@ -35,10 +35,11 @@ public class JMediaOrganizer {
 	private static File		inputFolder	= null;
 
 	public static void main(String[] args) {
-		ProjectProperties.loadProjectProperties();
-		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
-		Settings.loadSettings();
-		window = new Window();
+		LaunchConfiguration config = LaunchConfiguration.parse(args);
+//		ProjectProperties.loadProjectProperties();
+//		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
+//		Settings.loadSettings();
+//		window = new Window();
 	}
 
 	public static Window getWindow() {
