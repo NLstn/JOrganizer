@@ -42,6 +42,24 @@ public class LaunchConfiguration {
 		Option input = Option.builder("i").hasArg().desc("The folder to convert").longOpt("inputFolder").build();
 		options.addOption(input);
 
+		Option invalidTypes = Option.builder("t").hasArg().desc("Types to delete").longOpt("invalidTypes").build();
+		options.addOption(invalidTypes);
+
+		Option id3ToNameEnabled = Option.builder("id3").hasArg().desc("Enable ID3ToNameConverter").longOpt("id3ToNameEnabled").build();
+		options.addOption(id3ToNameEnabled);
+
+		Option id3ToNamePattern = Option.builder("id3p").hasArg().desc("ID3ToNameConverter Pattern").longOpt("id3ToNamePattern").build();
+		options.addOption(id3ToNamePattern);
+
+		Option outputFolder = Option.builder("out").hasArg().desc("Output Folder").longOpt("outputFolder").build();
+		options.addOption(outputFolder);
+
+		Option threadCount = Option.builder("tc").hasArg().desc("Thread Count for Conversion").longOpt("threadCount").build();
+		options.addOption(threadCount);
+
+		Option saveSettings = Option.builder("save").desc("Save overwritten settings").build();
+		options.addOption(saveSettings);
+
 		CommandLineParser parser = new DefaultParser();
 		help = new HelpFormatter();
 
