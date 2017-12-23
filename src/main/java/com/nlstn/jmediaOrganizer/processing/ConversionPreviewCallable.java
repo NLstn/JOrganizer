@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import com.nlstn.jmediaOrganizer.MP3File;
-import com.nlstn.jmediaOrganizer.Settings;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 public class ConversionPreviewCallable implements Callable<List<String>> {
 

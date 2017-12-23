@@ -13,8 +13,15 @@ import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.MP3File;
-import com.nlstn.jmediaOrganizer.Settings;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
+/**
+ * This class is responsible for processing files.
+ * 
+ * Creation: 23.12.2017
+ *
+ * @author Niklas Lahnstein
+ */
 public class FileProcessor {
 
 	static {

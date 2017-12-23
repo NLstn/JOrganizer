@@ -1,9 +1,11 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.properties;
 
 import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
+
+import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 
 /**
  * This class is used to access information in project.properties, which have previously been written to it by maven.<br>

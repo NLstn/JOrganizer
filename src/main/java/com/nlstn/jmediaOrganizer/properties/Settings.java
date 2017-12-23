@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.properties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 
 /**
  * This class is used to control settings. Settings are being saved to a file under C:\Users\User\AppData\Roaming\JMediaOrganizer.<br>
