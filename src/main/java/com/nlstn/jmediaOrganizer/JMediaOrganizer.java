@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.gui.Window;
+import com.nlstn.jmediaOrganizer.properties.ProjectProperties;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
  * Main class, handles initialization.<br>

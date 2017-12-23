@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.MP3File;
-import com.nlstn.jmediaOrganizer.Settings;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
  * Converter, to set the new path + filename of the file after processing.<br>

@@ -15,7 +15,9 @@ import javax.swing.JTree.DynamicUtilTreeNode;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-import com.nlstn.jmediaOrganizer.Settings;
+import com.nlstn.jmediaOrganizer.gui.settings.panels.ConverterSettingsPanel;
+import com.nlstn.jmediaOrganizer.gui.settings.panels.MainSettingsPanel;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
  * The SettingsWindow uses a CardLayout to display different settings panes<br>

@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer.gui.settings;
+package com.nlstn.jmediaOrganizer.gui.settings.panels;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,11 +19,12 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 import com.nlstn.jmediaOrganizer.MP3File;
-import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.models.VariableComboBoxModel;
+import com.nlstn.jmediaOrganizer.gui.settings.SettingsPanel;
 import com.nlstn.jmediaOrganizer.processing.Converter;
 import com.nlstn.jmediaOrganizer.processing.ConverterVariable;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 public class ConverterSettingsPanel extends SettingsPanel {
 

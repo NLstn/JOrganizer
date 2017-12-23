@@ -1,4 +1,4 @@
-package com.nlstn.jmediaOrganizer.gui.settings;
+package com.nlstn.jmediaOrganizer.gui.settings.panels;
 
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -18,8 +18,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import com.nlstn.jmediaOrganizer.Settings;
 import com.nlstn.jmediaOrganizer.gui.DirectoryChooser;
+import com.nlstn.jmediaOrganizer.gui.settings.SettingsPanel;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 public class MainSettingsPanel extends SettingsPanel {
 
