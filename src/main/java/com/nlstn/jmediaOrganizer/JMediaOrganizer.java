@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.gui.Window;
+import com.nlstn.jmediaOrganizer.properties.LaunchConfiguration;
 import com.nlstn.jmediaOrganizer.properties.ProjectProperties;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
@@ -35,11 +36,11 @@ public class JMediaOrganizer {
 	private static File		inputFolder	= null;
 
 	public static void main(String[] args) {
+		Settings.loadSettings();
+		ProjectProperties.loadProjectProperties();
 		LaunchConfiguration config = LaunchConfiguration.parse(args);
-//		ProjectProperties.loadProjectProperties();
-//		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
-//		Settings.loadSettings();
-//		window = new Window();
+		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
+		window = new Window();
 	}
 
 	public static Window getWindow() {
