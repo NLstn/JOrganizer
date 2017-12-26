@@ -5,6 +5,11 @@
 	<artifactId>JMediaOrganizer</artifactId>
 	<version>0.0.3</version>
 	<packaging>jar</packaging>
+	<scm>
+		<connection>scm:git:git://github.com/nlstn/JMediaOrganizer.git</connection>
+		<developerConnection>scm:git:ssh://github.com:nlstn/JMediaOrganizer.git</developerConnection>
+		<url>http://github.com/nlstn/JMediaOrganizer/tree/master</url>
+	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>com.mpatric</groupId>

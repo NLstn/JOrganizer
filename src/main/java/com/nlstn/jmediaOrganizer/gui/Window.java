@@ -4,9 +4,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -119,6 +129,11 @@ public class Window {
 		gbcNewValues.fill = GridBagConstraints.BOTH;
 		frame.getContentPane().add(newScrollPane, gbcNewValues);
 
+		DragAndDropListener listener = new DragAndDropListener();
+		new DropTarget(frame, listener);
+		new DropTarget(oldValues, listener);
+		new DropTarget(newValues, listener);
+
 		frame.setVisible(true);
 		log.debug("Finished building window.");
 	}
@@ -223,5 +238,78 @@ public class Window {
 
 	public JFrame getFrame() {
 		return frame;
+	}
+
+	private class DragAndDropListener implements DropTargetListener {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
+		 */
+		public void dragEnter(DropTargetDragEvent dtde) {
+
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
+		 */
+		public void dragOver(DropTargetDragEvent dtde) {
+
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
+		 */
+		public void dropActionChanged(DropTargetDragEvent e) {
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
+		 */
+		public void dragExit(DropTargetEvent dte) {
+
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
+		 */
+		public void drop(DropTargetDropEvent e) {
+			e.acceptDrop(DnDConstants.ACTION_COPY);
+
+			Transferable t = e.getTransferable();
+			DataFlavor[] flavors = t.getTransferDataFlavors();
+			for (DataFlavor flavor : flavors) {
+				if (flavor.isFlavorJavaFileListType()) {
+					try {
+						@SuppressWarnings("unchecked")
+						List<File> files = (List<File>) t.getTransferData(flavor);
+						if (files.size() == 1) {
+							if (files.get(0).isDirectory()) {
+								JMediaOrganizer.setInputFolder(files.get(0));
+								reloadInputFolder();
+								log.debug("Loaded folder " + files.get(0).getAbsolutePath() + " per drag and drop");
+								return;
+							}
+						}
+					}
+					catch (UnsupportedFlavorException e1) {
+						log.error("Failed to accept DragAndDrop files.", e1);
+					}
+					catch (IOException e1) {
+						log.error("Failed to accept DragAndDrop files.", e1);
+					}
+				}
+			}
+			e.rejectDrop();
+		}
 	}
 }
