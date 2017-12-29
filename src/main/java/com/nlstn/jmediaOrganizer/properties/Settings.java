@@ -51,7 +51,7 @@ public class Settings {
 	 * If not, a new file will be created and filled with default values.
 	 */
 	public static void loadSettings() {
-		propertiesPath = System.getenv("APPDATA") + "\\JMediaOrganizer\\settings.config";
+		propertiesPath = System.getProperty("jmediaOrganizer.home") + "\\settings.config";
 		propertiesFile = new File(propertiesPath);
 		properties = new Properties();
 		if (!propertiesFile.exists()) {
