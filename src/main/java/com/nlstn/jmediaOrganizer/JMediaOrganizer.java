@@ -1,6 +1,8 @@
 package com.nlstn.jmediaOrganizer;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +23,11 @@ public class JMediaOrganizer {
 	private static Logger log;
 
 	static {
+		System.setProperty("jmediaOrganizer.home", System.getenv("APPDATA") + "\\JMediaOrganizer");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH-mm-ss");
+		System.setProperty("current.date", dateFormat.format(new Date()));
+		System.setProperty("current.time", timeFormat.format(new Date()));
 		log = LogManager.getLogger(JMediaOrganizer.class);
 	}
 

@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-  <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Logger name="com.nlstn.jmediaOrganizer" level="TRACE" additivity="false">
-      <AppenderRef ref="Console"/>
-    </Logger>
-    <Root level="error">
-      <AppenderRef ref="Console"/>
-    </Root>
-  </Loggers>
+<Configuration status="warn" name="XMLConfigTest"
+	packages="org.apache.logging.log4j.test">
+	<Properties>
+		<Property name="logPath">${sys:jmediaOrganizer.home}\logs</Property>
+	</Properties>
+	<ThresholdFilter level="trace" />
+
+	<Appenders>
+		<Console name="STDOUT">
+			<PatternLayout pattern="%m%n" />
+		</Console>
+		<RollingFile name="File" fileName="${logPath}\${sys:current.date}\std-(${sys:current.time}).log" filePattern="${logPath}\std-%d{yyyyMMdd-HHmmss}.log.gz">
+			<PatternLayout>
+				<pattern>%p %C{1} [%t] %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${baseDir}" maxDepth="2">
+					<IfFileName glob="*/app-*.log.gz" />
+					<IfLastModified age="60d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="com.nlstn.jmediaOrganizer" level="debug"
+			additivity="false">
+			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="File" />
+		</Logger>
+
+		<Root level="trace">
+			<AppenderRef ref="STDOUT" />
+		</Root>
+	</Loggers>
+
 </Configuration>
