@@ -135,4 +135,12 @@ public class Settings {
 	public static void setThreadCount(int threadCount) {
 		properties.setProperty("threadCount", String.valueOf(threadCount));
 	}
+
+	public static void setStandardDirectoryChooserFolder(String folder) {
+		properties.setProperty("standardDirectoryChooserFolder", folder);
+	}
+
+	public static String getStandardDirectoryChooserFolder() {
+		return properties.getProperty("standardDirectoryChooserFolder");
+	}
 }
