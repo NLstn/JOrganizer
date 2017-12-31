@@ -271,8 +271,13 @@ public class MP3File {
 				log.error("Missing ID3Tags " + file.getAbsolutePath());
 				return false;
 			}
-		if (id3Tag.getArtist() == null) {
-			id3Tag.setArtist(((ID3v2) id3Tag).getAlbumArtist());
+		if (id3Tag.getArtist() == null && id3Tag.getAlbumArtist() != null) {
+			id3Tag.setArtist(id3Tag.getAlbumArtist());
+			log.debug("Filling empty Artist with Album Artist");
+		}
+		if (id3Tag.getArtist() != null && id3Tag.getAlbumArtist() == null) {
+			id3Tag.setAlbumArtist(id3Tag.getArtist());
+			log.debug("Filling empty Album Artist with Artist!");
 		}
 		if (id3Tag.getArtist() == null || id3Tag.getArtist() == "" || id3Tag.getAlbum() == null || id3Tag.getAlbum() == "" || id3Tag.getTitle() == null || id3Tag.getTitle() == "" || id3Tag.getTrack() == null || id3Tag.getTrack() == "") {
 			log.error("Missing ID3Tags " + file.getAbsolutePath());
