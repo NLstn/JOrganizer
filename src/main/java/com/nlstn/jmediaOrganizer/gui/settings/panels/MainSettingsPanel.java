@@ -1,6 +1,5 @@
 package com.nlstn.jmediaOrganizer.gui.settings.panels;
 
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -26,12 +25,14 @@ public class MainSettingsPanel extends SettingsPanel {
 
 	private static final long			serialVersionUID	= 6380112269593540681L;
 
-	private TextField					outputFolder;
+	private JTextField					outputFolder;
 	private JComboBox<Integer>			threadCount;
 	private DefaultListModel<String>	model;
 	private JTextField					field;
 	private List<String>				invalidTypes;
 	private JList<String>				invalidTypeList;
+
+	private JTextField					standardOpenFolder;
 
 	public MainSettingsPanel() {
 		setLayout(null);
@@ -42,12 +43,12 @@ public class MainSettingsPanel extends SettingsPanel {
 		lblOutputLabel.setBounds(10, 10, 80, 28);
 		add(lblOutputLabel);
 
-		outputFolder = new TextField();
+		outputFolder = new JTextField();
 		outputFolder.setBounds(90, 10, 320, 28);
 		add(outputFolder);
 
 		JButton openFolder = new JButton("Open Folder");
-		openFolder.addActionListener((ActionEvent e) -> onOpenDirectoryChooser());
+		openFolder.addActionListener((ActionEvent e) -> onOpenDirectoryChooser(0));
 		openFolder.setBounds(420, 10, 150, 28);
 		add(openFolder);
 
@@ -91,6 +92,19 @@ public class MainSettingsPanel extends SettingsPanel {
 		deleteType.addActionListener((ActionEvent e) -> deleteInvalidType());
 		deleteType.setBounds(175, 80, 120, 28);
 		add(deleteType);
+
+		JLabel lblStandardFolder = new JLabel("<html>Standard Open<br> Folder:</html>");
+		lblStandardFolder.setBounds(10, 240, 80, 56);
+		add(lblStandardFolder);
+
+		standardOpenFolder = new JTextField();
+		standardOpenFolder.setBounds(90, 240, 320, 28);
+		add(standardOpenFolder);
+
+		JButton standardOpenFolderButton = new JButton("Open Folder");
+		standardOpenFolderButton.setBounds(420, 240, 150, 28);
+		standardOpenFolderButton.addActionListener((ActionEvent e) -> onOpenDirectoryChooser(1));
+		add(standardOpenFolderButton);
 	}
 
 	public void loadSettings() {
@@ -100,12 +114,14 @@ public class MainSettingsPanel extends SettingsPanel {
 			model.addElement(type);
 			invalidTypes.add(type);
 		}
+		standardOpenFolder.setText(Settings.getStandardDirectoryChooserFolder());
 	}
 
 	public void saveSettings() {
 		Settings.setOutputFolder(outputFolder.getText());
 		Settings.setThreadCount((int) threadCount.getSelectedItem());
 		Settings.setInvalidTypes(invalidTypes);
+		Settings.setStandardDirectoryChooserFolder(standardOpenFolder.getText());
 	}
 
 	private void addInvalidType(String type) {
@@ -134,11 +150,16 @@ public class MainSettingsPanel extends SettingsPanel {
 		rebuildInvalidTypesList();
 	}
 
-	private void onOpenDirectoryChooser() {
+	private void onOpenDirectoryChooser(int option) {
 		DirectoryChooser chooser = new DirectoryChooser(getParent());
 		File folder = chooser.getSelectedDirectory();
-		if (folder != null)
+		if (folder == null)
+			return;
+		if (option == 0)
 			outputFolder.setText(folder.getAbsolutePath());
+		else
+			if (option == 1)
+				standardOpenFolder.setText(folder.getAbsolutePath());
 	}
 
 	private void showInvalidInputDialog(String message) {
