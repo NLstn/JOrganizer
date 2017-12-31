@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.gui.Window;
+import com.nlstn.jmediaOrganizer.properties.LaunchConfiguration;
 import com.nlstn.jmediaOrganizer.properties.ProjectProperties;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
@@ -42,10 +43,15 @@ public class JMediaOrganizer {
 	private static File		inputFolder	= null;
 
 	public static void main(String[] args) {
-		ProjectProperties.loadProjectProperties();
-		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
 		Settings.loadSettings();
-		window = new Window();
+		ProjectProperties.loadProjectProperties();
+		LaunchConfiguration config = LaunchConfiguration.parse(args);
+		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
+		if (config.isHeadlessModeEnabled()) {
+			new HeadlessHandler();
+		}
+		else
+			window = new Window();
 	}
 
 	public static Window getWindow() {
