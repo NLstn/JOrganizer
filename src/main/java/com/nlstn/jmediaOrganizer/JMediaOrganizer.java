@@ -40,7 +40,11 @@ public class JMediaOrganizer {
 		ProjectProperties.loadProjectProperties();
 		LaunchConfiguration config = LaunchConfiguration.parse(args);
 		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
-		window = new Window();
+		if (config.isHeadlessModeEnabled()) {
+			new HeadlessHandler();
+		}
+		else
+			window = new Window();
 	}
 
 	public static Window getWindow() {

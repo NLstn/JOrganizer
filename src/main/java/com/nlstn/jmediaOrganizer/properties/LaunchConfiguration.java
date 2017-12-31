@@ -2,7 +2,6 @@ package com.nlstn.jmediaOrganizer.properties;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -80,29 +79,28 @@ public class LaunchConfiguration {
 	private void processArgs() {
 		// If headless mode is enabled, input folder has to be supplied via command args
 		if (cmd.hasOption("h") && !cmd.hasOption("i")) {
-			String headlessOption = cmd.getOptionValue("h");
-			if (Boolean.valueOf(headlessOption)) {
-				System.out.println("You need to specify an input folder (-i), if you run in headless mode!");
-				help.printHelp("JMediaOrganizer", options);
-				System.exit(1);
-			}
+			System.out.println("You need to specify an input folder (-i), if you run in headless mode!");
+			help.printHelp("JMediaOrganizer", options);
+			System.exit(1);
+		}
+		if (cmd.hasOption("h")) {
+			log.debug("Enabled headlessMode");
 		}
 		if (cmd.hasOption("i")) {
-			String inputFolder = cmd.getOptionValue("i");
-			File f = new File(inputFolder);
-			if (!(f.exists() && f.isDirectory())) {
+			String inputFolderString = cmd.getOptionValue("i");
+			File inputFolder = new File(inputFolderString);
+			if (!(inputFolder.exists() && inputFolder.isDirectory())) {
 				log.error("Invalid input folder!");
 				help.printHelp("JMediaOrganizer", options);
 			}
 			else {
-				JMediaOrganizer.setInputFolder(f);
-				log.debug("Setting {} as the input folder", f.getAbsolutePath());
+				JMediaOrganizer.setInputFolder(inputFolder);
+				log.debug("Setting {} as the input folder", inputFolder.getAbsolutePath());
 			}
 		}
 		if (cmd.hasOption("id3")) {
-			boolean id3ToNameEnabled = Boolean.valueOf(cmd.getOptionValue("id3"));
-			Settings.setID3ToNameEnabled(id3ToNameEnabled);
-			log.debug("Setting id3ToNameEnabled setting to {}", id3ToNameEnabled);
+			Settings.setID3ToNameEnabled(Boolean.valueOf(cmd.getOptionValue("id3")));
+			log.debug("Setting id3ToNameEnabled setting to {}", Boolean.valueOf(cmd.getOptionValue("id3")));
 		}
 		if (cmd.hasOption("tc")) {
 			try {
@@ -113,6 +111,7 @@ public class LaunchConfiguration {
 				}
 				else {
 					Settings.setThreadCount(threadCount);
+					log.debug("Setting threadCount to {}", threadCount);
 				}
 			}
 			catch (NumberFormatException e) {
@@ -121,6 +120,7 @@ public class LaunchConfiguration {
 		}
 		if (cmd.hasOption("id3p")) {
 			Settings.setID3ToNamePattern(cmd.getOptionValue("id3p"));
+			log.debug("Setting id3ToNamePattern to {}", cmd.getOptionValue("id3p"));
 		}
 		if (cmd.hasOption("out")) {
 			String outPath = cmd.getOptionValue("out");
@@ -130,16 +130,20 @@ public class LaunchConfiguration {
 			}
 			else {
 				Settings.setOutputFolder(outFile.getAbsolutePath());
+				log.debug("Setting outputFolder to {}", outFile.getAbsolutePath());
 			}
 		}
 		if (cmd.hasOption("t")) {
-			String invalidTypes = cmd.getOptionValue("t");
-			List<String> typeList = Arrays.asList(invalidTypes.split(";"));
-			Settings.setInvalidTypes(typeList);
+			Settings.setInvalidTypes(Arrays.asList(cmd.getOptionValue("t").split(";")));
+			log.debug("Setting invalidTypes to {}", cmd.getOptionValue("t"));
 		}
 	}
 
 	public boolean isHeadlessModeEnabled() {
-		return cmd.getOptionValue("h") == "true";
+		return Boolean.valueOf(cmd.getOptionValue("h"));
+	}
+
+	public String getInputFolder() {
+		return cmd.getOptionValue("i");
 	}
 }
