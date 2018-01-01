@@ -91,6 +91,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		catch (BadLocationException e) {
 			e.printStackTrace();
 		}
+		txtPattern.requestFocus();
 	}
 
 	private void onToggleEnabled() {
