@@ -132,7 +132,7 @@ public class FileProcessor {
 		if (FileProcessor.example == null) {
 			example = new MP3File();
 			example.setTitle("Iridescent");
-			example.setAlbum("A Thousand Sunds");
+			example.setAlbum("A Thousand Suns");
 			example.setTrack("12");
 			example.setArtist("Linkin Park");
 			example.setAlbumArtist("Linkin Park");
