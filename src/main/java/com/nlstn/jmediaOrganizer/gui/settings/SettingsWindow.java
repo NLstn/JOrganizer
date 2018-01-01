@@ -86,6 +86,9 @@ public class SettingsWindow {
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
 			public void valueChanged(TreeSelectionEvent e) {
+				for (SettingsPanel panel : settingsPanels) {
+					panel.saveSettings();
+				}
 				layout.show(mainPanel, ((DynamicUtilTreeNode) tree.getLastSelectedPathComponent()).toString().toLowerCase());
 			}
 

@@ -44,7 +44,7 @@ public class Settings {
 		config.save();
 		log.info("Settings saved");
 	}
-
+	
 	public static List<String> getInvalidTypes() {
 		List<String> list = Arrays.asList(config.getConfig().getStringArray("invalidTypes"));
 		if (list == null)
