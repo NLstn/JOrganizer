@@ -111,7 +111,6 @@ public class ConverterSettingsPanel extends SettingsPanel {
 	public void saveSettings() {
 		Settings.setID3ToNameEnabled(chkEnabled.isSelected());
 		Settings.setID3ToNamePattern(txtPattern.getText());
-		Settings.save();
 	}
 
 	private void addActionListeners() {
