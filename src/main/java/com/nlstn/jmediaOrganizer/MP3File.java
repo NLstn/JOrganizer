@@ -305,7 +305,13 @@ public class MP3File {
 	}
 
 	public String getArtist() {
-		return id3Tag.getArtist() != null ? id3Tag.getArtist() : "";
+		String artist = id3Tag.getArtist();
+		if (artist == null)
+			artist = "";
+		else {
+			artist = artist.replace("/", ";");
+		}
+		return artist;
 	}
 
 	public void setArtist(String artist) {
@@ -329,7 +335,13 @@ public class MP3File {
 	}
 
 	public String getAlbumArtist() {
-		return id3Tag.getAlbumArtist() != null ? id3Tag.getAlbumArtist() : "";
+		String albumArtist = id3Tag.getAlbumArtist();
+		if (albumArtist == null)
+			albumArtist = "";
+		else {
+			albumArtist = albumArtist.replace("/", ";");
+		}
+		return albumArtist;
 	}
 
 	public void setAlbumArtist(String albumArtist) {
