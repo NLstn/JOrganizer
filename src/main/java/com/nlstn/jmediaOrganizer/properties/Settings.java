@@ -44,7 +44,7 @@ public class Settings {
 		config.save();
 		log.info("Settings saved");
 	}
-	
+
 	public static List<String> getInvalidTypes() {
 		List<String> list = Arrays.asList(config.getConfig().getStringArray("invalidTypes"));
 		if (list == null)
@@ -95,5 +95,13 @@ public class Settings {
 
 	public static String getStandardDirectoryChooserFolder() {
 		return config.getConfig().getString("standardDirectoryChooserFolder", "");
+	}
+
+	public static boolean getDeleteRootFolder() {
+		return config.getConfig().getBoolean("deleteRootFolder", false);
+	}
+
+	public static void setDeleteRootFolder(boolean value) {
+		config.getConfig().setProperty("deleteRootFolder", String.valueOf(value));
 	}
 }
