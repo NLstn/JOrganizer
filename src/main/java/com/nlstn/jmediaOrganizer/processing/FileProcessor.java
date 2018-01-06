@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.MP3File;
+import com.nlstn.jmediaOrganizer.processing.callable.ConversionCallable;
+import com.nlstn.jmediaOrganizer.processing.callable.ConversionPreviewCallable;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
@@ -56,21 +58,38 @@ public class FileProcessor {
 	public static List<String> getConversionPreview() {
 		long currentTime = System.currentTimeMillis();
 		int threadCount = Settings.getThreadCount();
+
+		int fileCount = currentFiles.size();
+
+		if (threadCount >= fileCount) {
+			threadCount = fileCount;
+		}
+
 		ExecutorService service = Executors.newFixedThreadPool(threadCount);
 		List<FutureTask<List<String>>> futureTasks = new ArrayList<FutureTask<List<String>>>();
 		List<ConversionPreviewCallable> callables = new ArrayList<ConversionPreviewCallable>();
 
 		List<String> result = new ArrayList<String>();
 
-		int amountPerThread = currentFiles.size() / threadCount;
+		int amountPerThread = fileCount / threadCount;
 
-		for (int i = 0; i < threadCount; i++) {
-			ConversionPreviewCallable callable = new ConversionPreviewCallable(i * amountPerThread, amountPerThread, currentFiles);
+		int processedFiles = 0;
+
+		for (int i = 0; i < threadCount - 1; i++) {
+			ConversionPreviewCallable callable = new ConversionPreviewCallable(currentFiles.subList(i * amountPerThread, i * amountPerThread + amountPerThread));
 			callables.add(callable);
+			processedFiles += amountPerThread;
 			FutureTask<List<String>> task = new FutureTask<List<String>>(callable);
 			futureTasks.add(task);
 			service.execute(task);
 		}
+
+		int remainingFiles = fileCount - processedFiles;
+		ConversionPreviewCallable callable = new ConversionPreviewCallable(currentFiles.subList(fileCount - remainingFiles, fileCount));
+		callables.add(callable);
+		FutureTask<List<String>> futureTask = new FutureTask<List<String>>(callable);
+		futureTasks.add(futureTask);
+		service.execute(futureTask);
 
 		for (FutureTask<List<String>> task : futureTasks) {
 			try {
@@ -80,8 +99,57 @@ public class FileProcessor {
 				e.printStackTrace();
 			}
 		}
+		logger.debug("Processed " + result.size() + " of " + fileCount + " files");
 		logger.debug("Took: " + (System.currentTimeMillis() - currentTime));
 		return result;
+	}
+
+	public static boolean convertFiles() {
+		long currentTime = System.currentTimeMillis();
+		int threadCount = Settings.getThreadCount();
+
+		int fileCount = currentFiles.size();
+
+		if (threadCount >= fileCount) {
+			threadCount = fileCount;
+		}
+
+		ExecutorService service = Executors.newFixedThreadPool(threadCount);
+		List<FutureTask<Boolean>> futureTasks = new ArrayList<FutureTask<Boolean>>();
+		List<ConversionCallable> callables = new ArrayList<ConversionCallable>();
+
+		int amountPerThread = fileCount / threadCount;
+
+		int processedFiles = 0;
+
+		for (int i = 0; i < threadCount - 1; i++) {
+			ConversionCallable callable = new ConversionCallable(currentFiles.subList(i * amountPerThread, i * amountPerThread + amountPerThread));
+			callables.add(callable);
+			processedFiles += amountPerThread;
+			FutureTask<Boolean> task = new FutureTask<Boolean>(callable);
+			futureTasks.add(task);
+			service.execute(task);
+		}
+
+		int remainingFiles = fileCount - processedFiles;
+		ConversionCallable callable = new ConversionCallable(currentFiles.subList(fileCount - remainingFiles, fileCount));
+		callables.add(callable);
+		FutureTask<Boolean> futureTask = new FutureTask<Boolean>(callable);
+		futureTasks.add(futureTask);
+		service.execute(futureTask);
+
+		boolean success = true;
+		for (FutureTask<Boolean> task : futureTasks) {
+			try {
+				if (!task.get())
+					success = false;
+			}
+			catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+		logger.debug("Took: " + (System.currentTimeMillis() - currentTime));
+		return success;
 	}
 
 	public static void cleanInputFolder() {
@@ -109,19 +177,6 @@ public class FileProcessor {
 		if (folder.listFiles().length == 0) {
 			logger.info("Deleting Folder " + folder.getAbsolutePath());
 			folder.delete();
-		}
-	}
-
-	public static void convertFiles() {
-		for (File file : currentFiles) {
-			MP3File mp3File = new MP3File(file);
-			if (mp3File.deleteIfOfType(ConversionPreviewCallable.invalidTypes)) {
-				continue;
-			}
-			if (mp3File.loadMp3Data()) {
-				mp3File.moveToLocation(Converter.getNewPath(mp3File));
-			}
-			file.delete();
 		}
 	}
 

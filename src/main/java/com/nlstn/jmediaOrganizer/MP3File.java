@@ -211,16 +211,18 @@ public class MP3File {
 	 * @param newLocation
 	 *            The new location to move the file to.
 	 */
-	public void moveToLocation(String newLocation) {
+	public boolean moveToLocation(String newLocation) {
 		File f = new File(newLocation);
 		File parent = f.getParentFile();
 		parent.mkdirs();
 		try {
 			f.createNewFile();
 			mp3File.save(newLocation);
+			return true;
 		}
 		catch (NotSupportedException | IOException e) {
 			log.error("Failed to relocate file", e);
+			return false;
 		}
 	}
 
