@@ -60,7 +60,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		Border insets = new EmptyBorder(5, 5, 5, 5);
 
 		scrollExample = new JScrollPane(lblExample);
-		scrollExample.setBounds(10, 27, 580, 150);
+		scrollExample.setBounds(10, 27, 580, 160);
 		scrollExample.setBorder(new CompoundBorder(lineBorder, insets));
 		add(scrollExample);
 
