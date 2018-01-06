@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,6 +34,7 @@ public class MainSettingsPanel extends SettingsPanel {
 	private JList<String>				invalidTypeList;
 
 	private JTextField					standardOpenFolder;
+	private JCheckBox					deleteRootFolder;
 
 	public MainSettingsPanel() {
 		setLayout(null);
@@ -105,6 +107,14 @@ public class MainSettingsPanel extends SettingsPanel {
 		standardOpenFolderButton.setBounds(420, 240, 150, 28);
 		standardOpenFolderButton.addActionListener((ActionEvent e) -> onOpenDirectoryChooser(1));
 		add(standardOpenFolderButton);
+
+		JLabel lblDeleteRootFolder = new JLabel("<html>Delete root<br> folder:</html>");
+		lblDeleteRootFolder.setBounds(10, 290, 80, 28);
+		add(lblDeleteRootFolder);
+
+		deleteRootFolder = new JCheckBox();
+		deleteRootFolder.setBounds(90, 290, 28, 28);
+		add(deleteRootFolder);
 	}
 
 	public void loadSettings() {
@@ -115,6 +125,7 @@ public class MainSettingsPanel extends SettingsPanel {
 			invalidTypes.add(type);
 		}
 		standardOpenFolder.setText(Settings.getStandardDirectoryChooserFolder());
+		deleteRootFolder.setSelected(Settings.getDeleteRootFolder());
 	}
 
 	public void saveSettings() {
@@ -122,6 +133,7 @@ public class MainSettingsPanel extends SettingsPanel {
 		Settings.setThreadCount((int) threadCount.getSelectedItem());
 		Settings.setInvalidTypes(invalidTypes);
 		Settings.setStandardDirectoryChooserFolder(standardOpenFolder.getText());
+		Settings.setDeleteRootFolder(deleteRootFolder.isSelected());
 	}
 
 	private void addInvalidType(String type) {

@@ -93,7 +93,9 @@ public class FileProcessor {
 		}
 		if (inputFolder.listFiles().length == 0) {
 			logger.info("Deleting empty folder " + inputFolder.getAbsolutePath());
-			inputFolder.delete();
+			if (Settings.getDeleteRootFolder()) {
+				inputFolder.delete();
+			}
 			JMediaOrganizer.setInputFolder(null);
 		}
 	}
@@ -124,10 +126,10 @@ public class FileProcessor {
 	}
 
 	public static MP3File getPreviewExample() {
-		if(currentFiles != null) {
+		if (currentFiles != null) {
 			MP3File example = new MP3File(currentFiles.get(0));
 			if (example.loadMp3Data())
-				return example;			
+				return example;
 		}
 		if (FileProcessor.example == null) {
 			example = new MP3File();
