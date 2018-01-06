@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.swing.JOptionPane;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -222,8 +220,7 @@ public class MP3File {
 			mp3File.save(newLocation);
 		}
 		catch (NotSupportedException | IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to relocate file!", JOptionPane.ERROR_MESSAGE);
+			log.error("Failed to relocate file", e);
 		}
 	}
 
