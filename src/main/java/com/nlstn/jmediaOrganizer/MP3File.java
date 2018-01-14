@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -182,7 +183,7 @@ public class MP3File {
 	 * @return Whether the list contains the type of this file.
 	 */
 	public boolean isOfType(List<String> types) {
-		return types.contains(getExtension().toLowerCase());
+		return types.contains(getExtension().toLowerCase(Locale.getDefault()));
 	}
 
 	/**
@@ -193,7 +194,7 @@ public class MP3File {
 	 * @return Whether or not this file was deleted, based on the outcome of {@link #isOfType(List)} and {@link File#delete()}.
 	 */
 	public boolean deleteIfOfType(List<String> types) {
-		if (types.contains(getExtension().toLowerCase())) {
+		if (types.contains(getExtension().toLowerCase(Locale.getDefault()))) {
 			if (!file.delete()) {
 				log.error("Failed to delete file " + file.getAbsolutePath());
 			}
@@ -214,9 +215,15 @@ public class MP3File {
 	public boolean moveToLocation(String newLocation) {
 		File f = new File(newLocation);
 		File parent = f.getParentFile();
-		parent.mkdirs();
+		if (!parent.mkdirs()) {
+			log.error("Failed to create parent folder!");
+			return false;
+		}
 		try {
-			f.createNewFile();
+			if (!f.createNewFile()) {
+				log.error("Failed to create new file!");
+				return false;
+			}
 			mp3File.save(newLocation);
 			return true;
 		}
@@ -278,7 +285,7 @@ public class MP3File {
 			id3Tag.setAlbumArtist(id3Tag.getArtist());
 			log.debug("Filling empty Album Artist with Artist!");
 		}
-		if (id3Tag.getArtist() == null || id3Tag.getArtist() == "" || id3Tag.getAlbum() == null || id3Tag.getAlbum() == "" || id3Tag.getTitle() == null || id3Tag.getTitle() == "" || id3Tag.getTrack() == null || id3Tag.getTrack() == "") {
+		if (id3Tag.getArtist() == null || id3Tag.getArtist().equals("") || id3Tag.getAlbum() == null || id3Tag.getAlbum().equals("") || id3Tag.getTitle() == null || id3Tag.getTitle().equals("") || id3Tag.getTrack() == null || id3Tag.getTrack().equals("")) {
 			log.error("Missing ID3Tags " + file.getAbsolutePath());
 			return false;
 		}

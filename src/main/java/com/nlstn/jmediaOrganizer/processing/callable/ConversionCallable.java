@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.nlstn.jmediaOrganizer.MP3File;
 import com.nlstn.jmediaOrganizer.processing.Converter;
 
@@ -13,6 +16,12 @@ import com.nlstn.jmediaOrganizer.processing.Converter;
  * @author Niklas Lahnstein
  */
 public class ConversionCallable implements Callable<Boolean> {
+
+	private static Logger log;
+
+	static {
+		log = LogManager.getLogger(ConversionCallable.class);
+	}
 
 	private List<File> files;
 
@@ -33,8 +42,10 @@ public class ConversionCallable implements Callable<Boolean> {
 				continue;
 			}
 			if (mp3File.loadMp3Data()) {
-				if (mp3File.moveToLocation(Converter.getNewPath(mp3File)))
-					file.delete();
+				if (mp3File.moveToLocation(Converter.getNewPath(mp3File))) {
+					if (!file.delete())
+						log.warn("Failed to delete relocated file: " + file.getAbsolutePath());
+				}
 				else
 					success = false;
 			}

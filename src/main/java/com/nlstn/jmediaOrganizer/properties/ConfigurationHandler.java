@@ -76,8 +76,10 @@ public class ConfigurationHandler {
 		}
 		finally {
 			try {
-				stream.close();
-				exampleFile.close();
+				if (stream != null)
+					stream.close();
+				if (exampleFile != null)
+					exampleFile.close();
 			}
 			catch (IOException e) {
 				log.error("Failed to copy sample settings file!", e);

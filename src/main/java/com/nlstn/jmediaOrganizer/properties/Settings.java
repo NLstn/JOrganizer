@@ -1,6 +1,5 @@
 package com.nlstn.jmediaOrganizer.properties;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,8 +46,6 @@ public class Settings {
 
 	public static List<String> getInvalidTypes() {
 		List<String> list = Arrays.asList(config.getConfig().getStringArray("invalidTypes"));
-		if (list == null)
-			list = new ArrayList<String>();
 		return list;
 	}
 

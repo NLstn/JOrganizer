@@ -28,15 +28,18 @@ public class MainTest {
 		FileProcessor.loadAllFiles();
 		List<String> result = FileProcessor.getConversionPreview();
 		assertEquals("Conversion Preview result should be D:/TestOutput/A Day to Remember (A Day to Remember) - And Their Name Was Treason (2005)/9 - 1958 (-1).mp3!", "D:/TestOutput/A Day to Remember (A Day to Remember) - And Their Name Was Treason (2005)/9 - 1958 (-1).mp3", result.get(0));
+		FileProcessor.clearCurrentFiles();
 	}
 
 	@Test
 	public void conversionPreviewCountTest() {
 		JMediaOrganizer.setInputFolder(new File("./src/test/resources/ConversionPreviewCountTest"));
 		Settings.loadSettings();
+		Settings.setID3ToNameEnabled(true);
 		FileProcessor.loadAllFiles();
 		List<String> result = FileProcessor.getConversionPreview();
 		assertEquals("Conversion Preview count should be 14", 14, result.size());
+		FileProcessor.clearCurrentFiles();
 	}
 
 }

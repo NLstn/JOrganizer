@@ -71,7 +71,7 @@ public class LaunchConfiguration {
 		catch (ParseException e) {
 			System.out.println(e.getMessage());
 			help.printHelp("JMediaOrganizer", options);
-			System.exit(1);
+			Runtime.getRuntime().exit(-1);
 		}
 		processArgs();
 	}
@@ -81,7 +81,7 @@ public class LaunchConfiguration {
 		if (cmd.hasOption("h") && !cmd.hasOption("i")) {
 			System.out.println("You need to specify an input folder (-i), if you run in headless mode!");
 			help.printHelp("JMediaOrganizer", options);
-			System.exit(1);
+			Runtime.getRuntime().exit(-1);
 		}
 		if (cmd.hasOption("h")) {
 			log.debug("Enabled headlessMode");
