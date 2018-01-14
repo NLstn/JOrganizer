@@ -38,7 +38,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 
 	private JScrollPane			scrollExample;
 
-	private MP3File				preview;
+	private transient MP3File	preview;
 
 	public ConverterSettingsPanel() {
 

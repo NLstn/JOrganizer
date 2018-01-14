@@ -3,12 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.nlstn.musicProcessor</groupId>
 	<artifactId>JMediaOrganizer</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<packaging>jar</packaging>
 	<scm>
 		<connection>scm:git:git://github.com/nlstn/JMediaOrganizer.git</connection>
 		<developerConnection>scm:git:ssh://github.com:nlstn/JMediaOrganizer.git</developerConnection>
 		<url>http://github.com/nlstn/JMediaOrganizer/tree/master</url>
+		<tag>HEAD</tag>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,6 +62,19 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.5</version>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Low</threshold>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 	<build>
 		<resources>
 			<resource>
@@ -88,9 +102,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>
-								${project.build.directory}/libs
-							</outputDirectory>
+							<outputDirectory>${project.build.directory}/libs</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -107,9 +119,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>
-										com.nlstn.jmediaOrganizer.JMediaOrganizer
-									</mainClass>
+									<mainClass>com.nlstn.jmediaOrganizer.JMediaOrganizer</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
@@ -124,8 +134,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.20.1</version>
 				<configuration>
-					<parallel>methods</parallel>
-					<threadCount>10</threadCount>
+					<argLine>-Xmx4096m -XX:MaxPermSize=512m</argLine>
 				</configuration>
 			</plugin>
 		</plugins>

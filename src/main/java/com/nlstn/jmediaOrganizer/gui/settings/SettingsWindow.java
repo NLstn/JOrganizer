@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -89,7 +90,7 @@ public class SettingsWindow {
 				for (SettingsPanel panel : settingsPanels) {
 					panel.saveSettings();
 				}
-				layout.show(mainPanel, ((DynamicUtilTreeNode) tree.getLastSelectedPathComponent()).toString().toLowerCase());
+				layout.show(mainPanel, ((DynamicUtilTreeNode) tree.getLastSelectedPathComponent()).toString().toLowerCase(Locale.getDefault()));
 			}
 
 		});

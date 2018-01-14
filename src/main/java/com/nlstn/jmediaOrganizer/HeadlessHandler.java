@@ -20,6 +20,10 @@ public class HeadlessHandler {
 
 	public HeadlessHandler() {
 		log.info("Launching Headless Mode");
+		run();
+	}
+
+	public void run() {
 		FileProcessor.loadAllFiles();
 		FileProcessor.convertFiles();
 		FileProcessor.cleanInputFolder();

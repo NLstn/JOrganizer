@@ -1,6 +1,7 @@
 package com.nlstn.jmediaOrganizer.properties;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
@@ -24,8 +25,8 @@ public class ProjectProperties {
 
 	public static void loadProjectProperties() {
 		properties = new Properties();
-		try {
-			properties.load(ProjectProperties.class.getResourceAsStream("/project.properties"));
+		try (InputStream stream = ProjectProperties.class.getResourceAsStream("/project.properties")) {
+			properties.load(stream);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
