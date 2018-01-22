@@ -215,12 +215,12 @@ public class MP3File {
 	public boolean moveToLocation(String newLocation) {
 		File f = new File(newLocation);
 		File parent = f.getParentFile();
-		if (!parent.mkdirs()) {
+		if (!parent.mkdirs() && !parent.exists()) {
 			log.error("Failed to create parent folder!");
 			return false;
 		}
 		try {
-			if (!f.createNewFile()) {
+			if (!f.createNewFile() && !f.exists()) {
 				log.error("Failed to create new file!");
 				return false;
 			}
