@@ -227,7 +227,20 @@ public class MP3File {
 			mp3File.save(newLocation);
 			return true;
 		}
-		catch (NotSupportedException | IOException e) {
+		catch (NotSupportedException e) {
+			ID3v2 tags = copyID3ToID3v2(mp3File.getId3v2Tag());
+			clearTags();
+			mp3File.setId3v2Tag(tags);
+			try {
+				mp3File.save(newLocation);
+			}
+			catch (NotSupportedException | IOException e2) {
+				log.error("Failed to relocate file", e2);
+				return false;
+			}
+			return true;
+		}
+		catch (IOException e) {
 			log.error("Failed to relocate file", e);
 			return false;
 		}
@@ -258,19 +271,9 @@ public class MP3File {
 		}
 		else
 			if (mp3File.hasId3v1Tag()) {
-				ID3v1 v1Tags = mp3File.getId3v1Tag();
-				id3Tag = new ID3v24Tag();
-				id3Tag.setTitle(v1Tags.getTitle());
-				id3Tag.setTrack(v1Tags.getTrack());
-				id3Tag.setArtist(v1Tags.getArtist());
-				id3Tag.setAlbumArtist(v1Tags.getArtist());
-				id3Tag.setYear(v1Tags.getYear());
-				id3Tag.setTrack(v1Tags.getTrack());
-				id3Tag.setGenre(v1Tags.getGenre());
-				id3Tag.setGenreDescription(v1Tags.getGenreDescription());
-				id3Tag.setAlbum(v1Tags.getAlbum());
-				mp3File.setId3v2Tag(id3Tag);
+				id3Tag = copyID3ToID3v2(mp3File.getId3v1Tag());
 				mp3File.removeId3v1Tag();
+				mp3File.setId3v2Tag(id3Tag);
 				log.info("Fixed outdated ID3Tags!");
 			}
 			else {
@@ -290,6 +293,40 @@ public class MP3File {
 			return false;
 		}
 		return true;
+	}
+
+	private ID3v2 copyID3ToID3v2(ID3v1 v1Tags) {
+		ID3v24Tag id3Tag = new ID3v24Tag();
+		id3Tag.setTitle(v1Tags.getTitle());
+		id3Tag.setTrack(v1Tags.getTrack());
+		id3Tag.setArtist(v1Tags.getArtist());
+		id3Tag.setAlbumArtist(v1Tags.getArtist());
+		id3Tag.setYear(v1Tags.getYear());
+		id3Tag.setTrack(v1Tags.getTrack());
+		id3Tag.setGenre(v1Tags.getGenre());
+		id3Tag.setGenreDescription(v1Tags.getGenreDescription());
+		id3Tag.setAlbum(v1Tags.getAlbum());
+		return id3Tag;
+	}
+
+	private ID3v2 copyID3ToID3v2(ID3v2 v2Tags) {
+		ID3v24Tag id3Tag = new ID3v24Tag();
+		id3Tag.setTitle(v2Tags.getTitle());
+		id3Tag.setTrack(v2Tags.getTrack());
+		id3Tag.setArtist(v2Tags.getArtist());
+		id3Tag.setAlbumArtist(v2Tags.getArtist());
+		id3Tag.setYear(v2Tags.getYear());
+		id3Tag.setTrack(v2Tags.getTrack());
+		id3Tag.setGenre(v2Tags.getGenre());
+		id3Tag.setGenreDescription(v2Tags.getGenreDescription());
+		id3Tag.setAlbum(v2Tags.getAlbum());
+		return id3Tag;
+	}
+
+	public void clearTags() {
+		mp3File.removeCustomTag();
+		mp3File.removeId3v1Tag();
+		mp3File.removeId3v2Tag();
 	}
 
 	public String getPath() {
