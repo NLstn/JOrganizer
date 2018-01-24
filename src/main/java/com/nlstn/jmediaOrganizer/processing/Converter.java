@@ -44,6 +44,7 @@ public class Converter {
 		availableVariables.add(new ConverterVariable("Length", "%length%"));
 		availableVariables.add(new ConverterVariable("Year", "%year%"));
 		availableVariables.add(new ConverterVariable("Title", "%title%"));
+		availableVariables.add(new ConverterVariable("Genre", "%genre%"));
 
 		Collections.sort(availableVariables, new Comparator<ConverterVariable>() {
 			public int compare(ConverterVariable o1, ConverterVariable o2) {
@@ -77,6 +78,8 @@ public class Converter {
 		pattern = pattern.replace("%length%", file.getLength());
 		pattern = pattern.replace("%year%", file.getYear());
 		pattern = pattern.replace("%title%", file.getTitle());
+
+		pattern = pattern.replace("%genre%", file.getGenre());
 
 		log.debug("Recalculated: " + file.getPath() + " to " + pattern);
 
