@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nlstn.jmediaOrganizer.MP3File;
+import com.nlstn.jmediaOrganizer.files.MP3File;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
@@ -81,7 +81,7 @@ public class Converter {
 
 		pattern = pattern.replace("%genre%", file.getGenre());
 
-		log.debug("Recalculated: " + file.getPath() + " to " + pattern);
+		log.debug("Recalculated: " + file.getAbsolutePath() + " to " + pattern);
 
 		return pattern;
 	}

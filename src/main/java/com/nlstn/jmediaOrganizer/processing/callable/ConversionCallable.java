@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.nlstn.jmediaOrganizer.MP3File;
+import com.nlstn.jmediaOrganizer.files.MP3File;
 import com.nlstn.jmediaOrganizer.processing.Converter;
 
 /**

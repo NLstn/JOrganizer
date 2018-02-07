@@ -1,10 +1,8 @@
-package com.nlstn.jmediaOrganizer;
+package com.nlstn.jmediaOrganizer.files;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,7 +24,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
  *
  * @author Niklas Lahnstein
  */
-public class MP3File {
+public class MP3File extends MediaFile {
 
 	private static Logger log;
 
@@ -124,11 +122,6 @@ public class MP3File {
 	}
 
 	/**
-	 * The file where this mp3File is stored
-	 */
-	private File	file;
-
-	/**
 	 * The {@link Mp3File}, which contains id3 information
 	 */
 	private Mp3File	mp3File;
@@ -146,7 +139,7 @@ public class MP3File {
 	 *            The mp3 file
 	 */
 	public MP3File(File file) {
-		this.file = file;
+		super(file);
 	}
 
 	/**
@@ -176,54 +169,15 @@ public class MP3File {
 	}
 
 	/**
-	 * Goes through the given list of types and checks, whether this file is of any of these types.
-	 * 
-	 * @param types
-	 *            The types to check
-	 * @return Whether the list contains the type of this file.
-	 */
-	public boolean isOfType(List<String> types) {
-		return types.contains(getExtension().toLowerCase(Locale.getDefault()));
-	}
-
-	/**
-	 * Checks whether this {@link #isOfType(List)} is true, and if so, deletes this file from disc.
-	 * 
-	 * @param types
-	 *            The types to check
-	 * @return Whether or not this file was deleted, based on the outcome of {@link #isOfType(List)} and {@link File#delete()}.
-	 */
-	public boolean deleteIfOfType(List<String> types) {
-		if (types.contains(getExtension().toLowerCase(Locale.getDefault()))) {
-			if (!file.delete()) {
-				log.error("Failed to delete file " + file.getAbsolutePath());
-			}
-			else {
-				log.error("Deleting file " + file.getAbsolutePath());
-			}
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Tries to create all parent folders of the files new path and move the file there.
 	 * 
 	 * @param newLocation
 	 *            The new location to move the file to.
 	 */
 	public boolean moveToLocation(String newLocation) {
-		File f = new File(newLocation);
-		File parent = f.getParentFile();
-		if (!parent.mkdirs() && !parent.exists()) {
-			log.error("Failed to create parent folder!");
+		if (!createNewFile(newLocation))
 			return false;
-		}
 		try {
-			if (!f.createNewFile() && !f.exists()) {
-				log.error("Failed to create new file!");
-				return false;
-			}
 			mp3File.save(newLocation);
 			return true;
 		}
@@ -277,7 +231,7 @@ public class MP3File {
 				log.info("Fixed outdated ID3Tags!");
 			}
 			else {
-				log.error("Missing ID3Tags " + file.getAbsolutePath());
+				log.error("Missing ID3Tags " + getAbsolutePath());
 				return false;
 			}
 		if (id3Tag.getArtist() == null && id3Tag.getAlbumArtist() != null) {
@@ -289,7 +243,7 @@ public class MP3File {
 			log.debug("Filling empty Album Artist with Artist!");
 		}
 		if (id3Tag.getArtist() == null || id3Tag.getArtist().equals("") || id3Tag.getAlbum() == null || id3Tag.getAlbum().equals("") || id3Tag.getTitle() == null || id3Tag.getTitle().equals("") || id3Tag.getTrack() == null || id3Tag.getTrack().equals("")) {
-			log.error("Missing ID3Tags " + file.getAbsolutePath());
+			log.error("Missing ID3Tags " + getAbsolutePath());
 			return false;
 		}
 		return true;
@@ -327,16 +281,6 @@ public class MP3File {
 		mp3File.removeCustomTag();
 		mp3File.removeId3v1Tag();
 		mp3File.removeId3v2Tag();
-	}
-
-	public String getPath() {
-		return file == null ? "Undefined" : file.getAbsolutePath();
-	}
-
-	public String getExtension() {
-		if (file == null)
-			return ".mp3";
-		return file.getName().substring(file.getName().lastIndexOf('.'));
 	}
 
 	public String getTitle() {

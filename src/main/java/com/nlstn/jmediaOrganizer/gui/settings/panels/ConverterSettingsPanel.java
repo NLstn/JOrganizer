@@ -18,7 +18,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
-import com.nlstn.jmediaOrganizer.MP3File;
+import com.nlstn.jmediaOrganizer.files.MP3File;
 import com.nlstn.jmediaOrganizer.gui.models.VariableComboBoxModel;
 import com.nlstn.jmediaOrganizer.gui.settings.SettingsPanel;
 import com.nlstn.jmediaOrganizer.processing.Converter;
