@@ -57,6 +57,7 @@ public class SettingsWindow {
 		dialog.setLocationRelativeTo(mainFrame);
 
 		dialog.setLayout(null);
+		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				save();
@@ -87,9 +88,14 @@ public class SettingsWindow {
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
 			public void valueChanged(TreeSelectionEvent e) {
+				boolean successful = true;
 				for (SettingsPanel panel : settingsPanels) {
-					panel.saveSettings();
+					if (!panel.saveSettings()) {
+						successful = false;
+					}
 				}
+				if (!successful)
+					tree.setSelectionPath(e.getOldLeadSelectionPath());
 				layout.show(mainPanel, ((DynamicUtilTreeNode) tree.getLastSelectedPathComponent()).toString().toLowerCase(Locale.getDefault()));
 			}
 
@@ -127,10 +133,16 @@ public class SettingsWindow {
 	 * Tells all SettingsPanels to save their settings to the settings file
 	 */
 	private void save() {
+		boolean successful = true;
 		for (SettingsPanel panel : settingsPanels) {
-			panel.saveSettings();
+			if (!panel.saveSettings()) {
+				successful = false;
+			}
 		}
-		Settings.save();
+		if (successful) {
+			Settings.save();
+			dialog.dispose();
+		}
 	}
 
 }

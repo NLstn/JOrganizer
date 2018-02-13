@@ -88,7 +88,7 @@ public class Window {
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			log.error("Failed to set Look and Feel!", e);
 		}
-		frame = new JFrame("MusicProcessor");
+		frame = new JFrame("JMediaOrganizer");
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
