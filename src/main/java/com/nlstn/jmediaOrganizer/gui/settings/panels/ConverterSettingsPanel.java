@@ -3,11 +3,13 @@ package com.nlstn.jmediaOrganizer.gui.settings.panels;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -25,6 +27,8 @@ import com.nlstn.jmediaOrganizer.processing.Converter;
 import com.nlstn.jmediaOrganizer.processing.ConverterVariable;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 import com.nlstn.jmediaOrganizer.properties.Settings;
+import com.nlstn.jmediaOrganizer.validation.PatternValidator;
+import com.nlstn.jmediaOrganizer.validation.ValidationError;
 
 public class ConverterSettingsPanel extends SettingsPanel {
 
@@ -41,9 +45,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 	private transient MP3File	preview;
 
 	public ConverterSettingsPanel() {
-
 		setLayout(null);
-
 		chkEnabled = new JCheckBox();
 		chkEnabled.setBounds(10, 7, 15, 15);
 		chkEnabled.addActionListener((ActionEvent e) -> onToggleEnabled());
@@ -108,9 +110,19 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		addActionListeners();
 	}
 
-	public void saveSettings() {
+	public boolean saveSettings() {
+		List<ValidationError> errors = PatternValidator.validate(txtPattern.getText());
+		if (errors.size() != 0) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("The pattern is invalid.\n");
+			for (ValidationError error : errors)
+				builder.append(error + "\n");
+			JOptionPane.showMessageDialog(this, builder.toString(), "Invalid Pattern", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 		Settings.setID3ToNameEnabled(chkEnabled.isSelected());
 		Settings.setID3ToNamePattern(txtPattern.getText());
+		return true;
 	}
 
 	private void addActionListeners() {

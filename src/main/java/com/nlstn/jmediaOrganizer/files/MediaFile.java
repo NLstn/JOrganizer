@@ -47,7 +47,7 @@ public class MediaFile {
 	}
 
 	public String getAbsolutePath() {
-		return file.getAbsolutePath();
+		return file == null ? "" : file.getAbsolutePath();
 	}
 
 	public String getExtension() {

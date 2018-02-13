@@ -128,12 +128,13 @@ public class MainSettingsPanel extends SettingsPanel {
 		deleteRootFolder.setSelected(Settings.getDeleteRootFolder());
 	}
 
-	public void saveSettings() {
+	public boolean saveSettings() {
 		Settings.setOutputFolder(outputFolder.getText());
 		Settings.setThreadCount((int) threadCount.getSelectedItem());
 		Settings.setInvalidTypes(invalidTypes);
 		Settings.setStandardDirectoryChooserFolder(standardOpenFolder.getText());
 		Settings.setDeleteRootFolder(deleteRootFolder.isSelected());
+		return true;
 	}
 
 	private void addInvalidType(String type) {
