@@ -41,5 +41,12 @@ public class ProjectProperties {
 	public static String getVersion() {
 		return properties.getProperty("version");
 	}
+	
+	/**
+	 * @return The maven project name
+	 */
+	public static String getName() {
+		return properties.getProperty("name");
+	}
 
 }
