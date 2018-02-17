@@ -46,7 +46,7 @@ public class JMediaOrganizer {
 		Settings.loadSettings();
 		ProjectProperties.loadProjectProperties();
 		LaunchConfiguration config = LaunchConfiguration.parse(args);
-		log.info("Starting JMediaOrganizer v" + ProjectProperties.getVersion());
+		log.info("Starting " + ProjectProperties.getName() + " v" + ProjectProperties.getVersion());
 		if (config.isHeadlessModeEnabled()) {
 			new HeadlessHandler();
 		}
