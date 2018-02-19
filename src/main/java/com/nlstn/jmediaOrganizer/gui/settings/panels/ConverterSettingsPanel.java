@@ -110,6 +110,10 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		addActionListeners();
 	}
 
+	public void reload() {
+		lblExample.setText(buildPreview());
+	}
+
 	public boolean saveSettings() {
 		List<ValidationError> errors = PatternValidator.validate(txtPattern.getText());
 		if (errors.size() != 0) {
