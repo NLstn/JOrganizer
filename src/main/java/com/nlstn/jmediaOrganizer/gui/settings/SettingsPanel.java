@@ -8,6 +8,8 @@ public abstract class SettingsPanel extends JPanel {
 
 	public abstract void loadSettings();
 
+	public abstract void reload();
+
 	public abstract boolean saveSettings();
 
 }

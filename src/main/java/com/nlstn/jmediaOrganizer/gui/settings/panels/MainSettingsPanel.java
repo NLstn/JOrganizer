@@ -128,6 +128,10 @@ public class MainSettingsPanel extends SettingsPanel {
 		deleteRootFolder.setSelected(Settings.getDeleteRootFolder());
 	}
 
+	public void reload() {
+
+	}
+
 	public boolean saveSettings() {
 		Settings.setOutputFolder(outputFolder.getText());
 		Settings.setThreadCount((int) threadCount.getSelectedItem());
