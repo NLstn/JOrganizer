@@ -4,15 +4,11 @@ import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.JTree.DynamicUtilTreeNode;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -64,29 +60,26 @@ public class SettingsWindow {
 			}
 		});
 
-		Hashtable<String, String> settingPanels = new Hashtable<String, String>();
-		settingPanels.put("Settings", "settings");
-		settingPanels.put("Converter", "converter");
-
-		JTree tree = new JTree(settingPanels);
-		tree.setBounds(10, 10, 200, 445);
-
+		
 		CardLayout layout = new CardLayout();
 		mainPanel = new JPanel(layout);
 		mainPanel.setBounds(220, 10, 620, 530);
 
 		MainSettingsPanel mainSettingsPanel = new MainSettingsPanel();
-		addSettingsPanel("settings", mainSettingsPanel);
+		addSettingsPanel("General", mainSettingsPanel);
 
 		ConverterSettingsPanel converterSettingsPanel = new ConverterSettingsPanel();
-		addSettingsPanel("converter", converterSettingsPanel);
+		addSettingsPanel("Converter", converterSettingsPanel);
 
-		layout.show(mainPanel, "converter");
+		layout.show(mainPanel, "General");
 
 		dialog.getContentPane().add(mainPanel);
 
+		SettingsPanelTree tree = new SettingsPanelTree();
+		tree.setBounds(10, 10, 200, 445);
+		
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
-
+			
 			public void valueChanged(TreeSelectionEvent e) {
 				boolean successful = true;
 				for (SettingsPanel panel : settingsPanels.values()) {
@@ -96,12 +89,12 @@ public class SettingsWindow {
 				}
 				if (!successful)
 					tree.setSelectionPath(e.getOldLeadSelectionPath());
-				String selectedIdentifier = ((DynamicUtilTreeNode) tree.getLastSelectedPathComponent()).toString().toLowerCase(Locale.getDefault());
-				SettingsPanel selectedPanel = settingsPanels.get(selectedIdentifier);
+				String selectedPanelName = e.getNewLeadSelectionPath().getLastPathComponent().toString();
+				SettingsPanel selectedPanel = settingsPanels.get(selectedPanelName);
 				selectedPanel.reload();
-				layout.show(mainPanel, selectedIdentifier);
+				layout.show(mainPanel, selectedPanelName);
 			}
-
+			
 		});
 
 		dialog.getContentPane().add(tree);
