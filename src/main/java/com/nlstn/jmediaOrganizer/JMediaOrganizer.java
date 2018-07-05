@@ -25,10 +25,10 @@ public class JMediaOrganizer {
 
 	static {
 		System.setProperty("jmediaOrganizer.home", System.getenv("APPDATA") + "\\JMediaOrganizer");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-		SimpleDateFormat timeFormat = new SimpleDateFormat("HH-mm-ss");
-		System.setProperty("current.date", dateFormat.format(new Date()));
-		System.setProperty("current.time", timeFormat.format(new Date()));
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+//		System.setProperty("current.date", dateFormat.format(new Date()));
+//		SimpleDateFormat timeFormat = new SimpleDateFormat("HH-mm-ss");
+//		System.setProperty("current.time", timeFormat.format(new Date()));
 		log = LogManager.getLogger(JMediaOrganizer.class);
 	}
 
@@ -47,9 +47,8 @@ public class JMediaOrganizer {
 		ProjectProperties.loadProjectProperties();
 		LaunchConfiguration config = LaunchConfiguration.parse(args);
 		log.info("Starting " + ProjectProperties.getName() + " v" + ProjectProperties.getVersion());
-		if (config.isHeadlessModeEnabled()) {
+		if (config.isHeadlessModeEnabled())
 			new HeadlessHandler();
-		}
 		else
 			window = new Window();
 	}

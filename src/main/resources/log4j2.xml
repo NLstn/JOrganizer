@@ -3,6 +3,7 @@
 	packages="org.apache.logging.log4j.test">
 	<Properties>
 		<Property name="logPath">${sys:jmediaOrganizer.home}\logs</Property>
+		<Property name="fileName">${logPath}\%d{yyyy-MM-dd}\std-%d{HH:mm:ss}.log</Property>
 	</Properties>
 	<ThresholdFilter level="trace" />
 
@@ -11,8 +12,8 @@
 			<PatternLayout pattern="%m%n" />
 		</Console>
 		<RollingFile name="File"
-			fileName="${logPath}\${sys:current.date}\std-(${sys:current.time}).log"
-			filePattern="${logPath}\std-%d{yyyyMMdd-HHmmss}.log.gz">
+			fileName="${fileName}"
+			filePattern="${fileName}.gz">
 			<PatternLayout>
 				<pattern>%p %C{1} [%t] %m%n</pattern>
 			</PatternLayout>
@@ -20,12 +21,6 @@
 				<TimeBasedTriggeringPolicy />
 				<SizeBasedTriggeringPolicy />
 			</Policies>
-			<DefaultRolloverStrategy>
-				<Delete basePath="${baseDir}" maxDepth="2">
-					<IfFileName glob="*/app-*.log.gz" />
-					<IfLastModified age="60d" />
-				</Delete>
-			</DefaultRolloverStrategy>
 		</RollingFile>
 	</Appenders>
 
