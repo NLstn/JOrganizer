@@ -26,6 +26,7 @@ import com.nlstn.jmediaOrganizer.gui.settings.SettingsPanel;
 import com.nlstn.jmediaOrganizer.processing.Converter;
 import com.nlstn.jmediaOrganizer.processing.ConverterVariable;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
+import com.nlstn.jmediaOrganizer.processing.Pattern;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 import com.nlstn.jmediaOrganizer.validation.PatternValidator;
 import com.nlstn.jmediaOrganizer.validation.ValidationError;
@@ -103,7 +104,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 
 	public void loadSettings() {
 		chkEnabled.setSelected(Settings.getID3ToNameEnabled());
-		txtPattern.setText(Settings.getID3ToNamePattern());
+		txtPattern.setText(Settings.getID3ToNamePattern().toString());
 		onToggleEnabled();
 		lblExample.setText(buildPreview());
 		lblExample.setCaretPosition(0);
@@ -125,7 +126,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 			return false;
 		}
 		Settings.setID3ToNameEnabled(chkEnabled.isSelected());
-		Settings.setID3ToNamePattern(txtPattern.getText());
+		Settings.setID3ToNamePattern(new Pattern(txtPattern.getText()));
 		return true;
 	}
 
@@ -160,7 +161,7 @@ public class ConverterSettingsPanel extends SettingsPanel {
 		StringBuilder previewLine = new StringBuilder();
 		previewLine.append("Preview:\n");
 		if (txtPattern.getText() != null && !txtPattern.getText().equals("")) {
-			String pattern = Converter.getNewPath(preview, txtPattern.getText());
+			String pattern = Converter.getNewPath(preview, new Pattern(txtPattern.getText()));
 			previewLine.append(pattern);
 		}
 		Graphics g = lblExample.getGraphics();

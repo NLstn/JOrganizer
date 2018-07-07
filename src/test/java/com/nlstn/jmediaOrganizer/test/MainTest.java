@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.processing.FileProcessor;
+import com.nlstn.jmediaOrganizer.processing.Pattern;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
@@ -24,7 +25,7 @@ public class MainTest {
 		Settings.loadSettings();
 		Settings.setID3ToNameEnabled(true);
 		Settings.setOutputFolder("D:/TestOutput");
-		Settings.setID3ToNamePattern("%output%/%albumArtist% (%artist%) - %album% (%year%)/%track% - %title% (%bpm%)%extension%");
+		Settings.setID3ToNamePattern(new Pattern("%output%/%albumArtist% (%artist%) - %album% (%year%)/%track% - %title% (%bpm%)%extension%"));
 		FileProcessor.loadAllFiles();
 		List<String> result = FileProcessor.getConversionPreview();
 		assertEquals("Conversion Preview result should be D:/TestOutput/A Day to Remember (A Day to Remember) - And Their Name Was Treason (2005)/9 - 1958 (-1).mp3!", "D:/TestOutput/A Day to Remember (A Day to Remember) - And Their Name Was Treason (2005)/9 - 1958 (-1).mp3", result.get(0));

@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.nlstn.jmediaOrganizer.processing.Pattern;
+
 /**
  * This class is used to control settings. Settings are being saved to a file under C:\Users\User\AppData\Roaming\JMediaOrganizer.<br>
  * <br>
@@ -62,11 +64,11 @@ public class Settings {
 		config.getConfig().setProperty("id3ToNameEnabled", enabled);
 	}
 
-	public static String getID3ToNamePattern() {
-		return config.getConfig().getString("id3ToNamePattern", "");
+	public static Pattern getID3ToNamePattern() {
+		return new Pattern(config.getConfig().getString("id3ToNamePattern", ""));
 	}
 
-	public static void setID3ToNamePattern(String pattern) {
+	public static void setID3ToNamePattern(Pattern pattern) {
 		config.getConfig().setProperty("id3ToNamePattern", pattern);
 	}
 

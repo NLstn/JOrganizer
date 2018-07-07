@@ -204,9 +204,9 @@ public class MP3File extends MediaFile {
 	 * Tries to load the ID3Tags of this file.<br>
 	 * <br>
 	 * First of all, the file is inspected if it has ID3v1 or ID3v2 tags.<br>
-	 * If the file contains none of both, the method returns.<br>
-	 * If the file contains ID3v1 Tags, it's information is copied into a new ID3v2 instance.<br>
-	 * If the file contains ID3v2 Tags, the method goes onto the next step.<br>
+	 * If the file contains none of both, the method returns false.<br>
+	 * If the file contains ID3v1 tags, it's information is copied into a new ID3v2 instance.<br>
+	 * If the file contains ID3v2 tags, the method continues to the validation of the tags.<br>
 	 * <br>
 	 * After that, a little fix is being applied: If the artist of the loaded ID3Tag is empty, copy the album artist into the artist.<br>
 	 * The artist is more important for the program than the album artist, so if the artist is empty, this is an attempt to fix it.<br>

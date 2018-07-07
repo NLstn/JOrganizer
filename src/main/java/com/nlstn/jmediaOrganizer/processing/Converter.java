@@ -32,7 +32,7 @@ public class Converter {
 
 	static {
 		availableVariables = new ArrayList<ConverterVariable>();
-		availableVariables.add(new ConverterVariable("Output Folder", "%output%"));
+		availableVariables.add(new ConverterVariable("Output Folder", "%output%", false));
 		availableVariables.add(new ConverterVariable("File Extension", "%extension%"));
 		availableVariables.add(new ConverterVariable("Artist", "%artist%"));
 		availableVariables.add(new ConverterVariable("Track Nr", "%track%"));
@@ -64,26 +64,18 @@ public class Converter {
 		return getNewPath(file, Settings.getID3ToNamePattern());
 	}
 
-	public static String getNewPath(MP3File file, String pattern) {
-		pattern = pattern.replace("%output%", Settings.getOutputFolder());
-		pattern = pattern.replace("%extension%", file.getExtension());
+	public static String getNewPath(MP3File file, Pattern pattern) {
 
-		pattern = pattern.replace("%artist%", file.getArtist());
-		pattern = pattern.replace("%track%", file.getTrack());
-		pattern = pattern.replace("%album%", file.getAlbum());
-		pattern = pattern.replace("%albumArtist%", file.getAlbumArtist());
-		pattern = pattern.replace("%bpm%", file.getBPM());
-		pattern = pattern.replace("%composer", file.getComposer());
-		pattern = pattern.replace("%date%", file.getDate());
-		pattern = pattern.replace("%length%", file.getLength());
-		pattern = pattern.replace("%year%", file.getYear());
-		pattern = pattern.replace("%title%", file.getTitle());
+		List<ConverterVariable> usedVariables = pattern.getUsedVariables();
+		String patternString = pattern.toString();
 
-		pattern = pattern.replace("%genre%", file.getGenre());
+		for (ConverterVariable variable : usedVariables) {
+			patternString.replace(variable.getVariable(), variable.getValue(file));
+		}
 
 		log.debug("Recalculated: " + file.getAbsolutePath() + " to " + pattern);
 
-		return pattern;
+		return patternString;
 	}
 
 	public static List<ConverterVariable> getVariables() {

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
+import com.nlstn.jmediaOrganizer.processing.Pattern;
 
 /**
  * Creation: 23.12.2017
@@ -119,7 +120,7 @@ public class LaunchConfiguration {
 			}
 		}
 		if (cmd.hasOption("id3p")) {
-			Settings.setID3ToNamePattern(cmd.getOptionValue("id3p"));
+			Settings.setID3ToNamePattern(new Pattern(cmd.getOptionValue("id3p")));
 			log.debug("Setting id3ToNamePattern to {}", cmd.getOptionValue("id3p"));
 		}
 		if (cmd.hasOption("out")) {
