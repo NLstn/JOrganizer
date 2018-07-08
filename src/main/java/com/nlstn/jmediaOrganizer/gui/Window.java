@@ -25,6 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -81,6 +82,8 @@ public class Window {
 	private JTextArea		oldValues;
 	private JTextArea		newValues;
 
+	private JProgressBar	progressBar;
+
 	public Window() {
 		log.debug("Creating main window...");
 		try {
@@ -101,7 +104,7 @@ public class Window {
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 10, 550, 30, 20, 30, 550, 10 };
-		gridBagLayout.rowHeights = new int[] { 10, 317, 50, 10 };
+		gridBagLayout.rowHeights = new int[] { 10, 317, 10, 30, 20 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 0.495, 0.0, 0.01, 0.0, 0.495, 0.0 };
 		gridBagLayout.rowWeights = new double[] { 0.0, 1.0, 0.0, 0.0 };
 		frame.getContentPane().setLayout(gridBagLayout);
@@ -130,13 +133,22 @@ public class Window {
 		gbcNewValues.fill = GridBagConstraints.BOTH;
 		frame.getContentPane().add(newScrollPane, gbcNewValues);
 
+		progressBar = new JProgressBar();
+
+		GridBagConstraints gbcProgressBar = new GridBagConstraints();
+		gbcProgressBar.gridx = 1;
+		gbcProgressBar.gridy = 3;
+		gbcProgressBar.gridwidth = 5;
+		gbcProgressBar.fill = GridBagConstraints.BOTH;
+		frame.getContentPane().add(progressBar, gbcProgressBar);
+
 		DragAndDropListener listener = new DragAndDropListener();
 		new DropTarget(frame, listener);
 		new DropTarget(oldValues, listener);
-		new DropTarget(newValues, listener);
 
 		frame.setVisible(true);
 		log.debug("Finished building window.");
+
 	}
 
 	/**
@@ -198,6 +210,15 @@ public class Window {
 		menuBar.add(action);
 
 		return menuBar;
+	}
+
+	public void initProgressBar(int maximum) {
+		progressBar.setMaximum(maximum);
+		progressBar.setValue(0);
+	}
+
+	public void updateProgressBar(int value) {
+		progressBar.setValue(value);
 	}
 
 	public void onChooseInputFolder() {

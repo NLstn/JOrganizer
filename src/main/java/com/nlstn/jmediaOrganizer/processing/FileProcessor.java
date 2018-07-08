@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,7 @@ public class FileProcessor {
 		logger = LogManager.getLogger(FileProcessor.class);
 	}
 
-	public static volatile int	progress;
+	public static AtomicInteger	progress	= new AtomicInteger();
 
 	private static List<File>	currentFiles;
 
@@ -63,6 +64,9 @@ public class FileProcessor {
 
 		int fileCount = currentFiles.size();
 
+		JMediaOrganizer.getWindow().initProgressBar(fileCount);
+		progress.set(0);
+
 		if (threadCount >= fileCount) {
 			threadCount = fileCount;
 		}
@@ -89,6 +93,17 @@ public class FileProcessor {
 		FutureTask<List<String>> futureTask = new FutureTask<List<String>>(callable);
 		futureTasks.add(futureTask);
 		service.execute(futureTask);
+
+		boolean ready = false;
+
+		while (!ready) {
+			ready = true;
+			for (FutureTask<List<String>> task : futureTasks) {
+				if (!task.isDone())
+					ready = false;
+			}
+			JMediaOrganizer.getWindow().updateProgressBar(progress.get());
+		}
 
 		for (FutureTask<List<String>> task : futureTasks) {
 			try {

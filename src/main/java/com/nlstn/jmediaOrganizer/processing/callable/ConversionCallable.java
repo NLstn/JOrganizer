@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.files.MP3File;
 import com.nlstn.jmediaOrganizer.processing.Converter;
+import com.nlstn.jmediaOrganizer.processing.FileProcessor;
 
 /**
  * Creation: 6 Jan 2018
@@ -49,6 +50,7 @@ public class ConversionCallable implements Callable<Boolean> {
 				else
 					success = false;
 			}
+			FileProcessor.progress.incrementAndGet();
 		}
 		return Boolean.valueOf(success);
 	}
