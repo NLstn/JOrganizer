@@ -1,4 +1,4 @@
-# JMediaOrganizer
+# JOrganizer
 
 Hi guys,
 
