@@ -1,7 +1,5 @@
 # JOrganizer
 
-Hi guys,
-
 This is a little program that i wrote actually for myself, but decided to make it (at least a bit) prettier and release it.
 
 You can use it to define the new file path of your files in a pattern using the information stored inside the ID3Tags. As this sounds confusing even to me, i'll give you an example:
