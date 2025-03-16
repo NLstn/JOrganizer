@@ -32,7 +32,7 @@ public class Converter {
 
 	static {
 		availableVariables = new ArrayList<ConverterVariable>();
-		availableVariables.add(new ConverterVariable("Output Folder", "%output%", false));
+		availableVariables.add(new ConverterVariable("Output Folder", "%output%"));
 		availableVariables.add(new ConverterVariable("File Extension", "%extension%"));
 		availableVariables.add(new ConverterVariable("Artist", "%artist%"));
 		availableVariables.add(new ConverterVariable("Track Nr", "%track%"));

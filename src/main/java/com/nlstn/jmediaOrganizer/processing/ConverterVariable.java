@@ -7,15 +7,10 @@ public class ConverterVariable {
 
 	private String	displayName;
 	private String	variable;
-	private boolean	fileVariable;
-
-	public ConverterVariable(String displayName, String variable, boolean fileVariable) {
-		this.displayName = displayName;
-		this.variable = variable;
-	}
 
 	public ConverterVariable(String displayName, String variable) {
-		this(displayName, variable, true);
+		this.displayName = displayName;
+		this.variable = variable;
 	}
 
 	public String getValue(MP3File file) {
@@ -54,10 +49,6 @@ public class ConverterVariable {
 
 	public String getVariable() {
 		return variable;
-	}
-
-	public boolean isFileVariable() {
-		return fileVariable;
 	}
 
 	public String toString() {
