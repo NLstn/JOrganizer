@@ -12,7 +12,7 @@ buildNumber.properties
 .project
 .factorypath
 null/
-null\\*
+null*JMediaOrganizer*
 logs/
 settings.config
 *.log.gz
