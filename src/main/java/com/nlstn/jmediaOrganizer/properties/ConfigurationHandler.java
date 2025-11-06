@@ -1,9 +1,11 @@
 package com.nlstn.jmediaOrganizer.properties;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
@@ -13,7 +15,6 @@ import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,13 +36,28 @@ public class ConfigurationHandler {
 	private FileBasedConfigurationBuilder<XMLConfiguration>	builder;
 	private FileBasedConfiguration							config;
 
-	public ConfigurationHandler(String fileName) {
-		File propertiesFile = new File(System.getProperty("jmediaOrganizer.home") + "\\" + fileName);
-		if (!propertiesFile.exists()) {
-			copySampleFile(fileName, propertiesFile);
-		}
-		Parameters params = new Parameters();
-		builder = configs.fileBasedBuilder(XMLConfiguration.class, propertiesFile).configure(params.fileBased().setThrowExceptionOnMissing(false).setFile(propertiesFile).setListDelimiterHandler(new DefaultListDelimiterHandler(';')));
+        public ConfigurationHandler(String fileName) {
+                String homeProperty = System.getProperty("jmediaOrganizer.home");
+                if (homeProperty == null || homeProperty.isBlank())
+                        throw new IllegalStateException("System property 'jmediaOrganizer.home' must be set.");
+
+                Path configurationDirectory = Paths.get(homeProperty).toAbsolutePath();
+                try {
+                        Files.createDirectories(configurationDirectory);
+                }
+                catch (IOException e) {
+                        log.error("Failed to create configuration directory {}", configurationDirectory, e);
+                        throw new IllegalStateException(
+                                        "Unable to create configuration directory " + configurationDirectory, e);
+                }
+
+                Path propertiesPath = configurationDirectory.resolve(fileName);
+                File propertiesFile = propertiesPath.toFile();
+                if (Files.notExists(propertiesPath)) {
+                        copySampleFile(fileName, propertiesPath);
+                }
+                Parameters params = new Parameters();
+                builder = configs.fileBasedBuilder(XMLConfiguration.class, propertiesFile).configure(params.fileBased().setThrowExceptionOnMissing(false).setFile(propertiesFile).setListDelimiterHandler(new DefaultListDelimiterHandler(';')));
 		try {
 			config = builder.getConfiguration();
 		}
@@ -63,28 +79,19 @@ public class ConfigurationHandler {
 		}
 	}
 
-	private static void copySampleFile(String fileName, File propertiesFile) {
-		FileOutputStream stream = null;
-		InputStream exampleFile = null;
-		try {
-			stream = new FileOutputStream(propertiesFile);
-			exampleFile = ConfigurationHandler.class.getResourceAsStream("/" + fileName);
-			IOUtils.copy(exampleFile, stream);
-		}
-		catch (IOException e) {
-			log.error("Failed to copy sample settings file!", e);
-		}
-		finally {
-			try {
-				if (stream != null)
-					stream.close();
-				if (exampleFile != null)
-					exampleFile.close();
-			}
-			catch (IOException e) {
-				log.error("Failed to copy sample settings file!", e);
-			}
-		}
-	}
+        private static void copySampleFile(String fileName, Path propertiesPath) {
+                try (InputStream exampleFile = ConfigurationHandler.class.getResourceAsStream("/" + fileName)) {
+                        if (exampleFile == null)
+                                throw new IllegalStateException(
+                                                "Missing sample configuration file on classpath: " + fileName);
+
+                        Files.createDirectories(propertiesPath.getParent());
+                        Files.copy(exampleFile, propertiesPath);
+                }
+                catch (IOException e) {
+                        log.error("Failed to copy sample settings file!", e);
+                        throw new IllegalStateException("Unable to copy sample settings file to " + propertiesPath, e);
+                }
+        }
 
 }
