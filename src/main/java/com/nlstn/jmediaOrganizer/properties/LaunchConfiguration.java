@@ -36,6 +36,7 @@ public class LaunchConfiguration {
 	private CommandLine		cmd;
 	private Options			options;
 	private HelpFormatter	help;
+	private boolean		headlessMode;
 
 	private LaunchConfiguration(String[] args) {
 		log.trace("Building CommandLineParser");
@@ -78,13 +79,15 @@ public class LaunchConfiguration {
 	}
 
 	private void processArgs() {
+		headlessMode = cmd.hasOption("h");
+
 		// If headless mode is enabled, input folder has to be supplied via command args
-		if (cmd.hasOption("h") && !cmd.hasOption("i")) {
+		if (headlessMode && !cmd.hasOption("i")) {
 			System.out.println("You need to specify an input folder (-i), if you run in headless mode!");
 			help.printHelp("JMediaOrganizer", options);
 			Runtime.getRuntime().exit(-1);
 		}
-		if (cmd.hasOption("h")) {
+		if (headlessMode) {
 			log.debug("Enabled headlessMode");
 		}
 		if (cmd.hasOption("i")) {
@@ -141,7 +144,7 @@ public class LaunchConfiguration {
 	}
 
 	public boolean isHeadlessModeEnabled() {
-		return Boolean.valueOf(cmd.getOptionValue("h"));
+		return headlessMode;
 	}
 
 	public String getInputFolder() {

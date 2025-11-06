@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +51,7 @@ public class JMediaOrganizer {
 	 * The reference to the main window
 	 */
 	private static Window	window;
+	private static Supplier<HeadlessHandler> headlessHandlerFactory = HeadlessHandler::new;
 
 	/**
 	 * The currently chosen input folder, or null, if no input folder was chosen
@@ -62,9 +64,17 @@ public class JMediaOrganizer {
 		LaunchConfiguration config = LaunchConfiguration.parse(args);
 		log.info("Starting " + ProjectProperties.getName() + " v" + ProjectProperties.getVersion());
 		if (config.isHeadlessModeEnabled())
-			new HeadlessHandler();
+			headlessHandlerFactory.get();
 		else
 			window = new Window();
+	}
+
+	static void setHeadlessHandlerFactory(Supplier<HeadlessHandler> factory) {
+		headlessHandlerFactory = factory == null ? HeadlessHandler::new : factory;
+	}
+
+	static void resetHeadlessHandlerFactory() {
+		headlessHandlerFactory = HeadlessHandler::new;
 	}
 
 	public static Window getWindow() {
