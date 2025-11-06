@@ -2,6 +2,9 @@ package com.nlstn.jmediaOrganizer.processing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Creation: 06.07.2018
@@ -10,37 +13,57 @@ import java.util.List;
  */
 public class Pattern {
 
-	private List<ConverterVariable> variables;
+    private final String pattern;
+    private List<ConverterVariable> variables;
 
-	private String					pattern;
+    public Pattern(String pattern) {
+        this.pattern = pattern == null ? "" : pattern;
+    }
 
-	public Pattern(String pattern) {
-		this.pattern = pattern;
-	}
+    public synchronized List<ConverterVariable> getUsedVariables() {
+        if (variables == null) {
+            variables = analyze(pattern).stream()
+                    .filter(PatternToken::closed)
+                    .map(PatternToken::token)
+                    .map(Converter::findVariable)
+                    .flatMap(Optional::stream)
+                    .distinct()
+                    .collect(Collectors.toUnmodifiableList());
+        }
+        return variables;
+    }
 
-	public List<ConverterVariable> getUsedVariables() {
-		if (variables == null) {
-			variables = new ArrayList<ConverterVariable>();
-			char[] chars = pattern.toCharArray();
-			int beginIndex = -1;
+    public static List<PatternToken> analyze(String pattern) {
+        if (pattern == null || pattern.isEmpty()) {
+            return List.of();
+        }
+        List<PatternToken> tokens = new ArrayList<>();
+        int beginIndex = -1;
+        for (int index = 0; index < pattern.length(); index++) {
+            if (pattern.charAt(index) == '%') {
+                if (beginIndex == -1) {
+                    beginIndex = index;
+                }
+                else {
+                    tokens.add(new PatternToken(pattern.substring(beginIndex, index + 1), beginIndex, true));
+                    beginIndex = -1;
+                }
+            }
+        }
+        if (beginIndex != -1) {
+            tokens.add(new PatternToken(pattern.substring(beginIndex), beginIndex, false));
+        }
+        return List.copyOf(tokens);
+    }
 
-			for (int i = 0; i < chars.length; i++) {
-				if (chars[i] == '%') {
-					if (beginIndex == -1)
-						beginIndex = i;
-					else {
-						String variable = new String(chars, beginIndex, i + 1 - beginIndex);
-						variables.add(Converter.getVariables().stream().filter(e -> e.getVariable().equals(variable)).findFirst().orElse(null));
-						beginIndex = -1;
-					}
-				}
-			}
-			variables.removeIf(v -> v == null);
-		}
-		return variables;
-	}
+    @Override
+    public String toString() {
+        return pattern;
+    }
 
-	public String toString() {
-		return pattern;
-	}
+    public record PatternToken(String token, int startIndex, boolean closed) {
+        public PatternToken {
+            Objects.requireNonNull(token, "token");
+        }
+    }
 }

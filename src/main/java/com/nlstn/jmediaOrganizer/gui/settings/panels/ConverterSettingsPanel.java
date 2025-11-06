@@ -88,8 +88,13 @@ public class ConverterSettingsPanel extends SettingsPanel {
 	}
 
 	private void appendVariable(ConverterVariable variable) {
+		if (variable == null)
+			return;
+		String token = variable.getVariable();
+		if (token == null || token.isBlank())
+			return;
 		try {
-			txtPattern.getDocument().insertString(txtPattern.getCaretPosition(), variable.getVariable(), null);
+			txtPattern.getDocument().insertString(txtPattern.getCaretPosition(), token, null);
 		}
 		catch (BadLocationException e) {
 			e.printStackTrace();

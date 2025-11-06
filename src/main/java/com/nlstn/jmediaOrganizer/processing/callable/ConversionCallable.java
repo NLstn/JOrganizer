@@ -17,40 +17,35 @@ import com.nlstn.jmediaOrganizer.processing.Converter;
  */
 public class ConversionCallable implements Callable<Boolean> {
 
-	private static Logger log;
+    private static final Logger LOG = LogManager.getLogger(ConversionCallable.class);
 
-	static {
-		log = LogManager.getLogger(ConversionCallable.class);
-	}
+    private final List<File> files;
+    private final List<String> invalidTypes;
 
-	private List<File> files;
+    public ConversionCallable(List<File> files, List<String> invalidTypes) {
+        this.files = List.copyOf(files);
+        this.invalidTypes = List.copyOf(invalidTypes);
+    }
 
-	public ConversionCallable(List<File> files) {
-		this.files = files;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.concurrent.Callable#call()
-	 */
-	public Boolean call() throws Exception {
-		boolean success = true;
-		for (File file : files) {
-			MP3File mp3File = new MP3File(file);
-			if (mp3File.deleteIfOfType(ConversionPreviewCallable.invalidTypes)) {
-				continue;
-			}
-			if (mp3File.loadMp3Data()) {
-				if (mp3File.moveToLocation(Converter.getNewPath(mp3File))) {
-					if (!file.delete())
-						log.warn("Failed to delete relocated file: " + file.getAbsolutePath());
-				}
-				else
-					success = false;
-			}
-		}
-		return Boolean.valueOf(success);
-	}
-
+    @Override
+    public Boolean call() {
+        boolean success = true;
+        for (File file : files) {
+            MP3File mp3File = new MP3File(file);
+            if (mp3File.deleteIfOfType(invalidTypes)) {
+                continue;
+            }
+            if (mp3File.loadMp3Data()) {
+                if (mp3File.moveToLocation(Converter.getNewPath(mp3File))) {
+                    if (!file.delete()) {
+                        LOG.warn("Failed to delete relocated file: {}", file.getAbsolutePath());
+                    }
+                }
+                else {
+                    success = false;
+                }
+            }
+        }
+        return Boolean.valueOf(success);
+    }
 }
