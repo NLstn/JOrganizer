@@ -12,5 +12,7 @@ buildNumber.properties
 .project
 .factorypath
 null/
+null\\*
 logs/
 settings.config
+*.log.gz
