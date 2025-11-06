@@ -14,6 +14,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -149,12 +150,12 @@ public class Window {
 
 		JMenu file = new JMenu("File");
 		JMenuItem itmLoad = new JMenuItem("Open");
-		itmLoad.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+                itmLoad.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		itmLoad.addActionListener((ActionEvent e) -> onChooseInputFolder());
 		file.add(itmLoad);
 
 		JMenuItem itmUnload = new JMenuItem("Unload Folder");
-		itmUnload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+                itmUnload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_DOWN_MASK));
 		itmUnload.addActionListener((ActionEvent e) -> {
 			JMediaOrganizer.setInputFolder(null);
 			oldValues.setText("");
@@ -163,7 +164,7 @@ public class Window {
 		file.add(itmUnload);
 
 		JMenuItem itmSettings = new JMenuItem("Settings");
-		itmSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+                itmSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
 		itmSettings.addActionListener((ActionEvent e) -> {
 			new SettingsWindow(frame);
 		});
@@ -174,7 +175,7 @@ public class Window {
 		JMenu action = new JMenu("Action");
 
 		JMenuItem itmPrevConvert = new JMenuItem("Preview Conversion");
-		itmPrevConvert.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
+                itmPrevConvert.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		itmPrevConvert.addActionListener((ActionEvent e) -> SwingUtilities.invokeLater(() -> getConversionPreview()));
 		action.add(itmPrevConvert);
 
