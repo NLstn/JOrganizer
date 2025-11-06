@@ -18,3 +18,7 @@ If i run the conversion now, the new path of this file would be:
 D:\Media\Music\Linkin Park - A Thousand Sunds\Iridescent.mp3
 
 I would be really greatful about any feedback about issues you found or ideas to improve the program.
+
+## Configuration files
+
+JMediaOrganizer stores its generated configuration files in the `.jmediaOrganizer` directory inside your user home (for example, `~/.jmediaOrganizer` on Linux and macOS or `C:\Users\&lt;username&gt;\.jmediaOrganizer` on Windows). The folder is created automatically when the application starts and populated with default configuration files if they are missing.

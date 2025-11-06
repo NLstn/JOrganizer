@@ -1,6 +1,10 @@
 package com.nlstn.jmediaOrganizer;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,10 +25,26 @@ public class JMediaOrganizer {
 
 	private static Logger log;
 
-	static {
-		System.setProperty("jmediaOrganizer.home", System.getenv("APPDATA") + "\\JMediaOrganizer");
-		log = LogManager.getLogger(JMediaOrganizer.class);
-	}
+        static {
+                Path configuredHome;
+                String existingProperty = System.getProperty("jmediaOrganizer.home");
+                if (existingProperty != null && !existingProperty.isBlank())
+                        configuredHome = Paths.get(existingProperty);
+                else
+                        configuredHome = Paths.get(System.getProperty("user.home"), ".jmediaOrganizer");
+
+                Path absoluteHome = configuredHome.toAbsolutePath();
+                try {
+                        Files.createDirectories(absoluteHome);
+                }
+                catch (IOException e) {
+                        throw new IllegalStateException(
+                                        "Failed to initialize jmediaOrganizer home directory at " + absoluteHome, e);
+                }
+
+                System.setProperty("jmediaOrganizer.home", absoluteHome.toString());
+                log = LogManager.getLogger(JMediaOrganizer.class);
+        }
 
 	/**
 	 * The reference to the main window
