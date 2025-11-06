@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Pattern {
 
-	private List<ConverterVariable>	variables	= new ArrayList<ConverterVariable>();
+	private List<ConverterVariable> variables;
 
 	private String					pattern;
 
@@ -35,6 +35,7 @@ public class Pattern {
 					}
 				}
 			}
+			variables.removeIf(v -> v == null);
 		}
 		return variables;
 	}
