@@ -21,12 +21,20 @@
 				"java.compile.nullAnalysis.mode": "automatic",
 				// Maven configuration
 				"maven.executable.path": "mvn",
-				// Editor settings
+				// Editor settings - respecting project's mixed style (Java uses spaces, XML uses tabs)
 				"editor.formatOnSave": true,
-				"editor.tabSize": 4,
-				"editor.insertSpaces": false,
 				"files.insertFinalNewline": true,
-				"files.trimTrailingWhitespace": true
+				"files.trimTrailingWhitespace": true,
+				// Java files use spaces with 8-space indentation (project convention)
+				"[java]": {
+					"editor.insertSpaces": true,
+					"editor.tabSize": 8
+				},
+				// XML files use tabs (project convention)
+				"[xml]": {
+					"editor.insertSpaces": false,
+					"editor.tabSize": 4
+				}
 			},
 			"extensions": [
 				// Java development pack (includes Red Hat Java, debugger, test runner, and dependency viewer)
@@ -40,6 +48,7 @@
 	},
 
 	// Run commands after the container is created to set up the development environment
+	// Using 'mvn verify' ensures dependencies are downloaded and tests pass on first startup
 	"postCreateCommand": "mvn verify",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
