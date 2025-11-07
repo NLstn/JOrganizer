@@ -1,27 +1,54 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/java
 {
-	"name": "Java",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+	"name": "JOrganizer Dev Container",
+	
+	// Base image with Java 21 on Debian Bookworm (latest stable)
+	"image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
 
+	// Features add additional tools and runtimes to the container
 	"features": {
-		"ghcr.io/devcontainers/features/java:1": {
-			"version": "none",
-			"installMaven": "true",
-			"installGradle": "false"
+		// GitHub CLI for working with GitHub from the command line
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"version": "latest"
 		}
-	}
+	},
+
+	// Customize VS Code settings and extensions for this project
+	"customizations": {
+		"vscode": {
+			"settings": {
+				// Java configuration
+				"java.configuration.updateBuildConfiguration": "automatic",
+				"java.compile.nullAnalysis.mode": "automatic",
+				// Maven configuration
+				"maven.executable.path": "mvn",
+				// Editor settings
+				"editor.formatOnSave": true,
+				"editor.tabSize": 4,
+				"editor.insertSpaces": false,
+				"files.insertFinalNewline": true,
+				"files.trimTrailingWhitespace": true
+			},
+			"extensions": [
+				// Java development essentials
+				"vscjava.vscode-java-pack",
+				"vscjava.vscode-maven",
+				// Code quality and formatting
+				"redhat.java",
+				"vscjava.vscode-java-debug",
+				"vscjava.vscode-java-test",
+				"vscjava.vscode-java-dependency",
+				// GitHub integration
+				"github.vscode-pull-request-github"
+			]
+		}
+	},
+
+	// Run commands after the container is created to set up the development environment
+	"postCreateCommand": "mvn verify",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "java -version",
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	// Connect as the default non-root user for better security
+	"remoteUser": "vscode"
 }
