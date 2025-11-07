@@ -29,14 +29,10 @@
 				"files.trimTrailingWhitespace": true
 			},
 			"extensions": [
-				// Java development essentials
+				// Java development pack (includes Red Hat Java, debugger, test runner, and dependency viewer)
 				"vscjava.vscode-java-pack",
+				// Maven support
 				"vscjava.vscode-maven",
-				// Code quality and formatting
-				"redhat.java",
-				"vscjava.vscode-java-debug",
-				"vscjava.vscode-java-test",
-				"vscjava.vscode-java-dependency",
 				// GitHub integration
 				"github.vscode-pull-request-github"
 			]
