@@ -1,17 +1,18 @@
 {
 	"name": "JOrganizer Dev Container",
-	
 	// Base image with Java 21 on Debian Bookworm (latest stable)
 	"image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
-
 	// Features add additional tools and runtimes to the container
 	"features": {
 		// GitHub CLI for working with GitHub from the command line
 		"ghcr.io/devcontainers/features/github-cli:1": {
 			"version": "latest"
+		},
+		// Maven for Java build automation
+		"ghcr.io/devcontainers/features/maven:1": {
+			"version": "latest"
 		}
 	},
-
 	// Customize VS Code settings and extensions for this project
 	"customizations": {
 		"vscode": {
@@ -46,14 +47,11 @@
 			]
 		}
 	},
-
 	// Run commands after the container is created to set up the development environment
 	// Using 'mvn verify' ensures dependencies are downloaded and tests pass on first startup
 	"postCreateCommand": "mvn verify",
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Connect as the default non-root user for better security
 	"remoteUser": "vscode"
 }
