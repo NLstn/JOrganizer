@@ -79,14 +79,28 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.1</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
+                        <plugin>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>3.14.1</version>
+                                <configuration>
+                                        <source>${java.version}</source>
+                                        <target>${java.version}</target>
+                                        <compilerArgs>
+                                                <arg>--enable-preview</arg>
+                                        </compilerArgs>
+                                        <testCompilerArgs>
+                                                <arg>--enable-preview</arg>
+                                        </testCompilerArgs>
+                                </configuration>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-surefire-plugin</artifactId>
+                                <version>3.2.5</version>
+                                <configuration>
+                                        <argLine>--enable-preview</argLine>
+                                </configuration>
+                        </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>

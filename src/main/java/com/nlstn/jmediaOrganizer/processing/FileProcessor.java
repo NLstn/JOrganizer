@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,8 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.files.MP3File;
-import com.nlstn.jmediaOrganizer.processing.callable.ConversionCallable;
-import com.nlstn.jmediaOrganizer.processing.callable.ConversionPreviewCallable;
+import com.nlstn.jmediaOrganizer.processing.Converter;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
@@ -75,29 +72,28 @@ public final class FileProcessor {
         int threadCount = determineThreadCount(fileCount);
         List<List<File>> partitions = partitionFiles(threadCount);
         List<String> preview = new ArrayList<>();
-        List<String> invalidTypes = Settings.getInvalidTypes();
+        List<String> invalidTypes = List.copyOf(Settings.getInvalidTypes());
 
-        ExecutorService service = Executors.newFixedThreadPool(threadCount);
-        try {
-            List<Future<List<String>>> futures = service.invokeAll(partitions.stream()
-                    .map(partition -> new ConversionPreviewCallable(partition, invalidTypes))
-                    .toList());
-
-            for (Future<List<String>> future : futures) {
-                try {
-                    preview.addAll(future.get());
-                }
-                catch (ExecutionException e) {
-                    LOGGER.error("Failed to build conversion preview", e.getCause());
-                }
-            }
+        List<StructuredTaskScope.Subtask<List<String>>> subtasks = List.of();
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            subtasks = partitions.stream()
+                    .map(partition -> scope.fork(() -> buildConversionPreview(partition, invalidTypes)))
+                    .toList();
+            scope.join();
+            scope.throwIfFailed();
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Interrupted while building conversion preview", e);
         }
-        finally {
-            service.shutdown();
+        catch (ExecutionException e) {
+            LOGGER.error("Failed to build conversion preview", e.getCause());
+        }
+
+        for (StructuredTaskScope.Subtask<List<String>> subtask : subtasks) {
+            if (subtask.state() == StructuredTaskScope.Subtask.State.SUCCESS) {
+                preview.addAll(subtask.get());
+            }
         }
 
         LOGGER.debug("Processed {} of {} files", preview.size(), fileCount);
@@ -111,31 +107,30 @@ public final class FileProcessor {
         int fileCount = currentFiles.size();
         int threadCount = determineThreadCount(fileCount);
         List<List<File>> partitions = partitionFiles(threadCount);
-        List<String> invalidTypes = Settings.getInvalidTypes();
+        List<String> invalidTypes = List.copyOf(Settings.getInvalidTypes());
 
-        ExecutorService service = Executors.newFixedThreadPool(threadCount);
         boolean success = true;
-        try {
-            List<Future<Boolean>> futures = service.invokeAll(partitions.stream()
-                    .map(partition -> new ConversionCallable(partition, invalidTypes))
-                    .toList());
-
-            for (Future<Boolean> future : futures) {
-                try {
-                    success &= Boolean.TRUE.equals(future.get());
-                }
-                catch (ExecutionException e) {
-                    LOGGER.error("Failed to convert files", e.getCause());
-                    success = false;
-                }
-            }
+        List<StructuredTaskScope.Subtask<Boolean>> subtasks = List.of();
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            subtasks = partitions.stream()
+                    .map(partition -> scope.fork(() -> convertPartition(partition, invalidTypes)))
+                    .toList();
+            scope.join();
+            scope.throwIfFailed();
         }
         catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Interrupted while converting files", e);
         }
-        finally {
-            service.shutdown();
+        catch (ExecutionException e) {
+            LOGGER.error("Failed to convert files", e.getCause());
+            success = false;
+        }
+
+        for (StructuredTaskScope.Subtask<Boolean> subtask : subtasks) {
+            if (subtask.state() == StructuredTaskScope.Subtask.State.SUCCESS) {
+                success &= Boolean.TRUE.equals(subtask.get());
+            }
         }
 
         return success;
@@ -245,5 +240,37 @@ public final class FileProcessor {
             index = endIndex;
         }
         return result;
+    }
+
+    private static List<String> buildConversionPreview(List<File> files, List<String> invalidTypes) {
+        List<String> result = new ArrayList<>();
+        for (File file : files) {
+            MP3File mp3File = new MP3File(file);
+            if (!mp3File.isOfType(invalidTypes) && mp3File.loadMp3Data()) {
+                result.add(Converter.getNewPath(mp3File));
+            }
+        }
+        return result;
+    }
+
+    private static boolean convertPartition(List<File> files, List<String> invalidTypes) {
+        boolean success = true;
+        for (File file : files) {
+            MP3File mp3File = new MP3File(file);
+            if (mp3File.deleteIfOfType(invalidTypes)) {
+                continue;
+            }
+            if (mp3File.loadMp3Data()) {
+                if (mp3File.moveToLocation(Converter.getNewPath(mp3File))) {
+                    if (!file.delete()) {
+                        LOGGER.warn("Failed to delete relocated file: {}", file.getAbsolutePath());
+                    }
+                }
+                else {
+                    success = false;
+                }
+            }
+        }
+        return success;
     }
 }
