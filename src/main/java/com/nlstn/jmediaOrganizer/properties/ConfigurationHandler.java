@@ -25,13 +25,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class ConfigurationHandler {
 
-	private static Logger			log;
-	private static Configurations	configs;
-
-	static {
-		log = LogManager.getLogger(ConfigurationHandler.class);
-		configs = new Configurations();
-	}
+	private static final Logger LOGGER = LogManager.getLogger(ConfigurationHandler.class);
+	private static final Configurations configs = new Configurations();
 
 	private FileBasedConfigurationBuilder<XMLConfiguration>	builder;
 	private FileBasedConfiguration							config;
@@ -46,7 +41,7 @@ public class ConfigurationHandler {
                         Files.createDirectories(configurationDirectory);
                 }
                 catch (IOException e) {
-                        log.error("Failed to create configuration directory {}", configurationDirectory, e);
+                        LOGGER.error("Failed to create configuration directory {}", configurationDirectory, e);
                         throw new IllegalStateException(
                                         "Unable to create configuration directory " + configurationDirectory, e);
                 }
@@ -62,7 +57,7 @@ public class ConfigurationHandler {
 			config = builder.getConfiguration();
 		}
 		catch (ConfigurationException e) {
-			log.error("Failed to create configuration!", e);
+			LOGGER.error("Failed to create configuration!", e);
 		}
 	}
 
@@ -75,7 +70,7 @@ public class ConfigurationHandler {
 			builder.save();
 		}
 		catch (ConfigurationException e) {
-			log.error("Failed to save configuration!", e);
+			LOGGER.error("Failed to save configuration!", e);
 		}
 	}
 
@@ -89,7 +84,7 @@ public class ConfigurationHandler {
                         Files.copy(exampleFile, propertiesPath);
                 }
                 catch (IOException e) {
-                        log.error("Failed to copy sample settings file!", e);
+                        LOGGER.error("Failed to copy sample settings file!", e);
                         throw new IllegalStateException("Unable to copy sample settings file to " + propertiesPath, e);
                 }
         }

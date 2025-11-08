@@ -26,11 +26,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
  */
 public class MP3File extends MediaFile {
 
-	private static Logger log;
-
-	static {
-		log = LogManager.getLogger(MP3File.class);
-	}
+	private static final Logger LOGGER = LogManager.getLogger(MP3File.class);
 
 	/**
 	 * Mapping between the byte representation and the display name of genres, copied from http://id3.org/d3v2.3.0?highlight=(id3v2.3.0.txt)
@@ -162,7 +158,7 @@ public class MP3File extends MediaFile {
 			mp3File = new Mp3File(file);
 		}
 		catch (UnsupportedTagException | InvalidDataException | IOException e) {
-			log.error("Unable to load Mp3 data " + file.getAbsolutePath(), e);
+			LOGGER.error("Unable to load Mp3 data " + file.getAbsolutePath(), e);
 			return false;
 		}
 		return getId3Tags();
@@ -189,13 +185,13 @@ public class MP3File extends MediaFile {
 				mp3File.save(newLocation);
 			}
 			catch (NotSupportedException | IOException e2) {
-				log.error("Failed to relocate file", e2);
+				LOGGER.error("Failed to relocate file", e2);
 				return false;
 			}
 			return true;
 		}
 		catch (IOException e) {
-			log.error("Failed to relocate file", e);
+			LOGGER.error("Failed to relocate file", e);
 			return false;
 		}
 	}
@@ -228,22 +224,22 @@ public class MP3File extends MediaFile {
 				id3Tag = copyID3ToID3v2(mp3File.getId3v1Tag());
 				mp3File.removeId3v1Tag();
 				mp3File.setId3v2Tag(id3Tag);
-				log.info("Fixed outdated ID3Tags!");
+				LOGGER.info("Fixed outdated ID3Tags!");
 			}
 			else {
-				log.error("Missing ID3Tags " + getAbsolutePath());
+				LOGGER.error("Missing ID3Tags " + getAbsolutePath());
 				return false;
 			}
 		if (id3Tag.getArtist() == null && id3Tag.getAlbumArtist() != null) {
 			id3Tag.setArtist(id3Tag.getAlbumArtist());
-			log.debug("Filling empty Artist with Album Artist");
+			LOGGER.debug("Filling empty Artist with Album Artist");
 		}
 		if (id3Tag.getArtist() != null && id3Tag.getAlbumArtist() == null) {
 			id3Tag.setAlbumArtist(id3Tag.getArtist());
-			log.debug("Filling empty Album Artist with Artist!");
+			LOGGER.debug("Filling empty Album Artist with Artist!");
 		}
 		if (id3Tag.getArtist() == null || id3Tag.getArtist().equals("") || id3Tag.getAlbum() == null || id3Tag.getAlbum().equals("") || id3Tag.getTitle() == null || id3Tag.getTitle().equals("") || id3Tag.getTrack() == null || id3Tag.getTrack().equals("")) {
-			log.error("Missing ID3Tags " + getAbsolutePath());
+			LOGGER.error("Missing ID3Tags " + getAbsolutePath());
 			return false;
 		}
 		return true;
