@@ -136,8 +136,11 @@ public class Window {
 		new DropTarget(oldValues, listener);
 		new DropTarget(newValues, listener);
 
-		frame.setVisible(true);
 		log.debug("Finished building window.");
+	}
+
+	public void show() {
+		frame.setVisible(true);
 	}
 
 	/**
