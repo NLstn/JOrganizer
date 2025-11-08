@@ -2,8 +2,8 @@ package com.nlstn.jmediaOrganizer.files;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,91 +35,95 @@ public class MP3File extends MediaFile {
 	/**
 	 * Mapping between the byte representation and the display name of genres, copied from http://id3.org/d3v2.3.0?highlight=(id3v2.3.0.txt)
 	 */
-	private static Map<Integer, String> genreMapping;
+        private static final Map<Integer, String> GENRE_MAPPING;
+        private static final Map<String, Integer> GENRE_REVERSE_MAPPING;
 
-	static {
-		genreMapping = new HashMap<Integer, String>();
-		genreMapping.put(0, "Blues");
-		genreMapping.put(1, "Classic Rock");
-		genreMapping.put(2, "Country");
-		genreMapping.put(3, "Dance");
-		genreMapping.put(4, "Disco");
-		genreMapping.put(5, "Funk");
-		genreMapping.put(6, "Grunge");
-		genreMapping.put(7, "Hip-Hop");
-		genreMapping.put(8, "Jazz");
-		genreMapping.put(9, "Metal");
-		genreMapping.put(10, "New Age");
-		genreMapping.put(11, "Oldies");
-		genreMapping.put(12, "Other");
-		genreMapping.put(13, "Pop");
-		genreMapping.put(14, "R&B");
-		genreMapping.put(15, "Rap");
-		genreMapping.put(16, "Reggae");
-		genreMapping.put(17, "Rock");
-		genreMapping.put(18, "Techno");
-		genreMapping.put(19, "Industrial");
-		genreMapping.put(20, "Alternative");
-		genreMapping.put(21, "Ska");
-		genreMapping.put(22, "Death Metal");
-		genreMapping.put(23, "Pranks");
-		genreMapping.put(24, "Soundtrack");
-		genreMapping.put(25, "Euro-Techno");
-		genreMapping.put(26, "Ambient");
-		genreMapping.put(27, "Trip-Hop");
-		genreMapping.put(28, "Vocal");
-		genreMapping.put(29, "Jazz+Funk");
-		genreMapping.put(30, "Fusion");
-		genreMapping.put(31, "Trance");
-		genreMapping.put(32, "Classical");
-		genreMapping.put(33, "Instrumental");
-		genreMapping.put(34, "Acid");
-		genreMapping.put(35, "House");
-		genreMapping.put(36, "Game");
-		genreMapping.put(37, "Sound Clip");
-		genreMapping.put(38, "Gospel");
-		genreMapping.put(39, "Noise");
-		genreMapping.put(40, "AlternRock");
-		genreMapping.put(41, "Bass");
-		genreMapping.put(42, "Soul");
-		genreMapping.put(43, "Punk");
-		genreMapping.put(44, "Space");
-		genreMapping.put(45, "Meditative");
-		genreMapping.put(46, "Instrumental Pop");
-		genreMapping.put(47, "Instrumental Rock");
-		genreMapping.put(48, "Ethnic");
-		genreMapping.put(49, "Gothic");
-		genreMapping.put(50, "Darkwave");
-		genreMapping.put(51, "Techno-Industrial");
-		genreMapping.put(52, "Electronic");
-		genreMapping.put(53, "Pop-Folk");
-		genreMapping.put(54, "Eurodance");
-		genreMapping.put(55, "Dream");
-		genreMapping.put(56, "Southern Rock");
-		genreMapping.put(57, "Comedy");
-		genreMapping.put(58, "Cult");
-		genreMapping.put(59, "Gangsta");
-		genreMapping.put(60, "Top 40");
-		genreMapping.put(61, "Christian Rap");
-		genreMapping.put(62, "Pop/Funk");
-		genreMapping.put(63, "Jungle");
-		genreMapping.put(64, "Native American");
-		genreMapping.put(65, "Cabaret");
-		genreMapping.put(66, "New Wave");
-		genreMapping.put(67, "Psychadelic");
-		genreMapping.put(68, "Rave");
-		genreMapping.put(69, "Showtunes");
-		genreMapping.put(70, "Trailer");
-		genreMapping.put(71, "Lo-Fi");
-		genreMapping.put(72, "Tribal");
-		genreMapping.put(73, "Acid Punk");
-		genreMapping.put(74, "Acid Jazz");
-		genreMapping.put(75, "Polka");
-		genreMapping.put(76, "Retro");
-		genreMapping.put(77, "Musical");
-		genreMapping.put(78, "Rock & Roll");
-		genreMapping.put(79, "Hard Rock");
-	}
+        static {
+                GENRE_MAPPING = Map.ofEntries(
+                                Map.entry(0, "Blues"),
+                                Map.entry(1, "Classic Rock"),
+                                Map.entry(2, "Country"),
+                                Map.entry(3, "Dance"),
+                                Map.entry(4, "Disco"),
+                                Map.entry(5, "Funk"),
+                                Map.entry(6, "Grunge"),
+                                Map.entry(7, "Hip-Hop"),
+                                Map.entry(8, "Jazz"),
+                                Map.entry(9, "Metal"),
+                                Map.entry(10, "New Age"),
+                                Map.entry(11, "Oldies"),
+                                Map.entry(12, "Other"),
+                                Map.entry(13, "Pop"),
+                                Map.entry(14, "R&B"),
+                                Map.entry(15, "Rap"),
+                                Map.entry(16, "Reggae"),
+                                Map.entry(17, "Rock"),
+                                Map.entry(18, "Techno"),
+                                Map.entry(19, "Industrial"),
+                                Map.entry(20, "Alternative"),
+                                Map.entry(21, "Ska"),
+                                Map.entry(22, "Death Metal"),
+                                Map.entry(23, "Pranks"),
+                                Map.entry(24, "Soundtrack"),
+                                Map.entry(25, "Euro-Techno"),
+                                Map.entry(26, "Ambient"),
+                                Map.entry(27, "Trip-Hop"),
+                                Map.entry(28, "Vocal"),
+                                Map.entry(29, "Jazz+Funk"),
+                                Map.entry(30, "Fusion"),
+                                Map.entry(31, "Trance"),
+                                Map.entry(32, "Classical"),
+                                Map.entry(33, "Instrumental"),
+                                Map.entry(34, "Acid"),
+                                Map.entry(35, "House"),
+                                Map.entry(36, "Game"),
+                                Map.entry(37, "Sound Clip"),
+                                Map.entry(38, "Gospel"),
+                                Map.entry(39, "Noise"),
+                                Map.entry(40, "AlternRock"),
+                                Map.entry(41, "Bass"),
+                                Map.entry(42, "Soul"),
+                                Map.entry(43, "Punk"),
+                                Map.entry(44, "Space"),
+                                Map.entry(45, "Meditative"),
+                                Map.entry(46, "Instrumental Pop"),
+                                Map.entry(47, "Instrumental Rock"),
+                                Map.entry(48, "Ethnic"),
+                                Map.entry(49, "Gothic"),
+                                Map.entry(50, "Darkwave"),
+                                Map.entry(51, "Techno-Industrial"),
+                                Map.entry(52, "Electronic"),
+                                Map.entry(53, "Pop-Folk"),
+                                Map.entry(54, "Eurodance"),
+                                Map.entry(55, "Dream"),
+                                Map.entry(56, "Southern Rock"),
+                                Map.entry(57, "Comedy"),
+                                Map.entry(58, "Cult"),
+                                Map.entry(59, "Gangsta"),
+                                Map.entry(60, "Top 40"),
+                                Map.entry(61, "Christian Rap"),
+                                Map.entry(62, "Pop/Funk"),
+                                Map.entry(63, "Jungle"),
+                                Map.entry(64, "Native American"),
+                                Map.entry(65, "Cabaret"),
+                                Map.entry(66, "New Wave"),
+                                Map.entry(67, "Psychadelic"),
+                                Map.entry(68, "Rave"),
+                                Map.entry(69, "Showtunes"),
+                                Map.entry(70, "Trailer"),
+                                Map.entry(71, "Lo-Fi"),
+                                Map.entry(72, "Tribal"),
+                                Map.entry(73, "Acid Punk"),
+                                Map.entry(74, "Acid Jazz"),
+                                Map.entry(75, "Polka"),
+                                Map.entry(76, "Retro"),
+                                Map.entry(77, "Musical"),
+                                Map.entry(78, "Rock & Roll"),
+                                Map.entry(79, "Hard Rock"));
+                GENRE_REVERSE_MAPPING = GENRE_MAPPING.entrySet()
+                                .stream()
+                                .collect(Collectors.toUnmodifiableMap(Map.Entry::getValue, Map.Entry::getKey));
+        }
 
 	/**
 	 * The {@link Mp3File}, which contains id3 information
@@ -359,13 +363,22 @@ public class MP3File extends MediaFile {
 		id3Tag.setDate(date);
 	}
 
-	public String getGenre() {
-		return genreMapping.get(id3Tag.getGenre()) != null ? genreMapping.get(id3Tag.getGenre()) : "";
-	}
+        public String getGenre() {
+                return Optional.ofNullable(GENRE_MAPPING.get(id3Tag.getGenre())).orElse("");
+        }
 
-	public void setGenre(String genre) {
-		id3Tag.setGenre(genreMapping.entrySet().stream().filter(entry -> entry.getValue().equals(genre)).collect(Collectors.toList()).get(0).getKey());
-	}
+        public void setGenre(String genre) {
+                Optional<String> normalizedGenre = Optional.ofNullable(genre).map(String::trim).filter(value -> !value.isEmpty());
+                if (normalizedGenre.isEmpty()) {
+                        log.warn("Skipping genre update because the provided genre is blank.");
+                        return;
+                }
+
+                String resolvedGenre = normalizedGenre.get();
+                Optional.ofNullable(GENRE_REVERSE_MAPPING.get(resolvedGenre))
+                                .ifPresentOrElse(id3Tag::setGenre,
+                                                () -> log.warn("Unknown genre '{}', skipping update.", resolvedGenre));
+        }
 
 	public String getLength() {
 		return String.valueOf(id3Tag.getLength());
