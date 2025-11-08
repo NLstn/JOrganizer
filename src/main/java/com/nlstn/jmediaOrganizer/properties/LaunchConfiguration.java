@@ -1,7 +1,9 @@
 package com.nlstn.jmediaOrganizer.properties;
 
-import java.io.File;
 import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.processing.Pattern;
+import com.nlstn.jmediaOrganizer.properties.Settings;
 
 /**
  * Creation: 23.12.2017
@@ -90,18 +93,18 @@ public class LaunchConfiguration {
 		if (headlessMode) {
 			log.debug("Enabled headlessMode");
 		}
-		if (cmd.hasOption("i")) {
-			String inputFolderString = cmd.getOptionValue("i");
-			File inputFolder = new File(inputFolderString);
-			if (!(inputFolder.exists() && inputFolder.isDirectory())) {
-				log.error("Invalid input folder!");
-				help.printHelp("JMediaOrganizer", options);
-			}
-			else {
-				JMediaOrganizer.setInputFolder(inputFolder);
-				log.debug("Setting {} as the input folder", inputFolder.getAbsolutePath());
-			}
-		}
+                if (cmd.hasOption("i")) {
+                        String inputFolderString = cmd.getOptionValue("i");
+                        Path inputFolder = Paths.get(inputFolderString);
+                        if (!Files.isDirectory(inputFolder)) {
+                                log.error("Invalid input folder!");
+                                help.printHelp("JMediaOrganizer", options);
+                        }
+                        else {
+                                JMediaOrganizer.setInputFolder(inputFolder);
+                                log.debug("Setting {} as the input folder", inputFolder.toAbsolutePath());
+                        }
+                }
 		if (cmd.hasOption("id3")) {
 			Settings.setID3ToNameEnabled(Boolean.valueOf(cmd.getOptionValue("id3")));
 			log.debug("Setting id3ToNameEnabled setting to {}", Boolean.valueOf(cmd.getOptionValue("id3")));
@@ -126,17 +129,17 @@ public class LaunchConfiguration {
 			Settings.setID3ToNamePattern(new Pattern(cmd.getOptionValue("id3p")));
 			log.debug("Setting id3ToNamePattern to {}", cmd.getOptionValue("id3p"));
 		}
-		if (cmd.hasOption("out")) {
-			String outPath = cmd.getOptionValue("out");
-			File outFile = new File(outPath);
-			if (!outFile.isDirectory()) {
-				log.error("Output Folder {} is not a folder!", outFile.getAbsolutePath());
-			}
-			else {
-				Settings.setOutputFolder(outFile.getAbsolutePath());
-				log.debug("Setting outputFolder to {}", outFile.getAbsolutePath());
-			}
-		}
+                if (cmd.hasOption("out")) {
+                        String outPath = cmd.getOptionValue("out");
+                        Path outFile = Paths.get(outPath);
+                        if (!Files.isDirectory(outFile)) {
+                                log.error("Output Folder {} is not a folder!", outFile.toAbsolutePath());
+                        }
+                        else {
+                                Settings.setOutputFolder(outFile.toAbsolutePath().toString());
+                                log.debug("Setting outputFolder to {}", outFile.toAbsolutePath());
+                        }
+                }
 		if (cmd.hasOption("t")) {
 			Settings.setInvalidTypes(Arrays.asList(cmd.getOptionValue("t").split(";")));
 			log.debug("Setting invalidTypes to {}", cmd.getOptionValue("t"));
@@ -147,7 +150,8 @@ public class LaunchConfiguration {
 		return headlessMode;
 	}
 
-	public String getInputFolder() {
-		return cmd.getOptionValue("i");
-	}
+        public Path getInputFolder() {
+                String input = cmd.getOptionValue("i");
+                return input == null ? null : Paths.get(input);
+        }
 }

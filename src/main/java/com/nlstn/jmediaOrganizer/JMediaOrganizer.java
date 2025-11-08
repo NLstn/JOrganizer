@@ -1,6 +1,5 @@
 package com.nlstn.jmediaOrganizer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +55,7 @@ public class JMediaOrganizer {
 	/**
 	 * The currently chosen input folder, or null, if no input folder was chosen
 	 */
-	private static File		inputFolder	= null;
+	private static Path		inputFolder	= null;
 
 	public static void main(String[] args) {
 		Settings.loadSettings();
@@ -81,11 +80,11 @@ public class JMediaOrganizer {
 		return window;
 	}
 
-	public static File getInputFolder() {
+	public static Path getInputFolder() {
 		return inputFolder;
 	}
 
-	public static void setInputFolder(File inputFolder) {
+	public static void setInputFolder(Path inputFolder) {
 		JMediaOrganizer.inputFolder = inputFolder;
 	}
 

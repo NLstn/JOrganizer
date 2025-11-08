@@ -1,6 +1,6 @@
 package com.nlstn.jmediaOrganizer.files;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -138,7 +138,7 @@ public class MP3File extends MediaFile {
 	 * @param file
 	 *            The mp3 file
 	 */
-	public MP3File(File file) {
+	public MP3File(Path file) {
 		super(file);
 	}
 
@@ -159,10 +159,10 @@ public class MP3File extends MediaFile {
 	 */
 	public boolean loadMp3Data() {
 		try {
-			mp3File = new Mp3File(file);
+			mp3File = new Mp3File(file.toFile());
 		}
 		catch (UnsupportedTagException | InvalidDataException | IOException e) {
-			log.error("Unable to load Mp3 data " + file.getAbsolutePath(), e);
+			log.error("Unable to load Mp3 data " + getAbsolutePath(), e);
 			return false;
 		}
 		return getId3Tags();
