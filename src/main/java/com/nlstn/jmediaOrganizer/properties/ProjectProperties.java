@@ -7,6 +7,7 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
+import com.nlstn.jmediaOrganizer.gui.Window;
 
 /**
  * This class is used to access information in project.properties, which have previously been written to it by maven.<br>
@@ -30,7 +31,8 @@ public class ProjectProperties {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(JMediaOrganizer.getWindow().getFrame(), "Error", "Failed to load properties file!", JOptionPane.ERROR_MESSAGE);
+			Window window = JMediaOrganizer.getWindow();
+			JOptionPane.showMessageDialog(window == null ? null : window.getFrame(), "Error", "Failed to load properties file!", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}

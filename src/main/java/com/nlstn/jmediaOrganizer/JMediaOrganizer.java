@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,7 +68,15 @@ public class JMediaOrganizer {
 		if (config.isHeadlessModeEnabled())
 			headlessHandlerFactory.get();
 		else
-			window = new Window();
+			launchGui();
+	}
+
+	private static void launchGui() {
+		SwingUtilities.invokeLater(() -> {
+			Window createdWindow = new Window();
+			window = createdWindow;
+			createdWindow.show();
+		});
 	}
 
 	static void setHeadlessHandlerFactory(Supplier<HeadlessHandler> factory) {
