@@ -1,18 +1,18 @@
 package com.nlstn.jmediaOrganizer.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.nlstn.jmediaOrganizer.files.MP3File;
 import com.nlstn.jmediaOrganizer.processing.Converter;
 import com.nlstn.jmediaOrganizer.processing.Pattern;
 
-public class ConverterTest {
+class ConverterTest {
 
         @Test
-        public void patternPlaceholdersAreReplaced() {
+        void patternPlaceholdersAreReplaced() {
                 MP3File file = new MP3File();
                 file.setArtist("ArtistName");
                 file.setAlbum("AlbumName");
@@ -24,6 +24,6 @@ public class ConverterTest {
                 String result = Converter.getNewPath(file, pattern);
 
                 assertEquals("ArtistName/AlbumName/01 - SongName (ArtistName)", result);
-                assertFalse("Result should not contain unresolved placeholders", result.contains("%"));
+                assertFalse(result.contains("%"), "Result should not contain unresolved placeholders");
         }
 }

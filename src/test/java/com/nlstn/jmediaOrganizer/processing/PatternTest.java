@@ -1,18 +1,18 @@
 package com.nlstn.jmediaOrganizer.processing;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PatternTest {
+class PatternTest {
 
         @Test
-        public void getUsedVariablesFiltersUnknownPlaceholder() {
+        void getUsedVariablesFiltersUnknownPlaceholder() {
                 Pattern pattern = new Pattern("%artist%-%unknown%-%title%");
 
                 List<ConverterVariable> usedVariables = pattern.getUsedVariables();
@@ -26,7 +26,7 @@ public class PatternTest {
         }
 
         @Test
-        public void getUsedVariablesCachesAfterFirstAccess() {
+        void getUsedVariablesCachesAfterFirstAccess() {
                 Pattern pattern = new Pattern("%artist%");
 
                 List<ConverterVariable> firstCall = pattern.getUsedVariables();
