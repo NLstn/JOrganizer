@@ -1,49 +1,46 @@
 package com.nlstn.jmediaOrganizer.properties;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class ConfigurationHandlerTest {
+class ConfigurationHandlerTest {
 
-        @Rule
-        public TemporaryFolder temporaryFolder = new TemporaryFolder();
+        @TempDir
+        Path temporaryFolder;
 
         private String previousHome;
 
-        @Before
-        public void rememberHomeProperty() {
+        @BeforeEach
+        void rememberHomeProperty() {
                 previousHome = System.getProperty("jmediaOrganizer.home");
         }
 
-        @After
-        public void restoreHomeProperty() {
-                if (previousHome != null)
+        @AfterEach
+        void restoreHomeProperty() {
+                if (previousHome != null) {
                         System.setProperty("jmediaOrganizer.home", previousHome);
-                else
+                } else {
                         System.clearProperty("jmediaOrganizer.home");
+                }
         }
 
         @Test
-        public void loadsConfigurationWhenHomeUsesUnixSeparators() throws IOException {
-                File root = temporaryFolder.getRoot();
-                Path customHome = root.toPath().resolve("config-root/nested");
+        void loadsConfigurationWhenHomeUsesUnixSeparators() {
+                Path customHome = temporaryFolder.resolve("config-root").resolve("nested");
                 System.setProperty("jmediaOrganizer.home", customHome.toString());
 
                 ConfigurationHandler handler = new ConfigurationHandler("settings.config");
 
-                assertNotNull("Configuration should be available", handler.getConfig());
-                assertTrue("Configuration directory should be created", Files.isDirectory(customHome));
-                assertTrue("Configuration file should be copied", Files.exists(customHome.resolve("settings.config")));
+                assertNotNull(handler.getConfig(), "Configuration should be available");
+                assertTrue(Files.isDirectory(customHome), "Configuration directory should be created");
+                assertTrue(Files.exists(customHome.resolve("settings.config")), "Configuration file should be copied");
         }
 }

@@ -1,59 +1,51 @@
 package com.nlstn.jmediaOrganizer.processing;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
 import com.nlstn.jmediaOrganizer.properties.Settings;
 
-public class FileProcessorTest {
+class FileProcessorTest {
 
-        private Path inputDirectory;
+        @TempDir
+        static Path settingsDirectory;
 
-        @BeforeClass
-        public static void setupSettings() throws IOException {
-                Path settingsDirectory = Files.createTempDirectory("jmedia-settings");
+        @TempDir
+        Path inputDirectory;
+
+        @BeforeAll
+        static void setupSettings() {
                 System.setProperty("jmediaOrganizer.home", settingsDirectory.toString());
                 Settings.loadSettings();
                 Settings.setThreadCount(2);
         }
 
-        @Before
-        public void setup() throws IOException {
-                inputDirectory = Files.createTempDirectory("jmedia-empty-input");
+        @BeforeEach
+        void setup() {
                 JMediaOrganizer.setInputFolder(inputDirectory.toFile());
                 FileProcessor.loadAllFiles();
         }
 
-        @After
-        public void tearDown() throws IOException {
+        @AfterEach
+        void tearDown() {
                 JMediaOrganizer.setInputFolder(null);
-                if (inputDirectory != null) {
-                        try (var paths = Files.walk(inputDirectory)) {
-                                paths.sorted(Comparator.reverseOrder())
-                                                .map(Path::toFile)
-                                                .forEach(File::delete);
-                        }
-                }
         }
 
         @Test
-        public void getConversionPreviewReturnsEmptyListWhenNoFilesPresent() {
+        void getConversionPreviewReturnsEmptyListWhenNoFilesPresent() {
                 assertTrue(FileProcessor.getConversionPreview().isEmpty());
         }
 
         @Test
-        public void convertFilesSucceedsWhenNoFilesPresent() {
+        void convertFilesSucceedsWhenNoFilesPresent() {
                 assertTrue(FileProcessor.convertFiles());
         }
 }

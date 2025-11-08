@@ -1,25 +1,23 @@
 package com.nlstn.jmediaOrganizer;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class HeadlessCliTest {
+class HeadlessCliTest {
 
-        @After
-        public void resetFactory() {
+        @AfterEach
+        void resetFactory() {
                 JMediaOrganizer.resetHeadlessHandlerFactory();
         }
 
         @Test
-        public void mainInvokesHeadlessHandlerWhenHeadlessFlagPresent() throws IOException {
-                Path tempDir = Files.createTempDirectory("jmediaOrganizerHeadlessTest");
+        void mainInvokesHeadlessHandlerWhenHeadlessFlagPresent(@TempDir Path tempDir) {
                 AtomicBoolean invoked = new AtomicBoolean(false);
 
                 JMediaOrganizer.setHeadlessHandlerFactory(() -> new HeadlessHandler() {
@@ -29,13 +27,8 @@ public class HeadlessCliTest {
                         }
                 });
 
-                try {
-                        JMediaOrganizer.main(new String[] { "-h", "-i", tempDir.toString() });
-                }
-                finally {
-                        Files.deleteIfExists(tempDir);
-                }
+                JMediaOrganizer.main(new String[] { "-h", "-i", tempDir.toString() });
 
-                assertTrue("Headless handler should be invoked when -h flag is used", invoked.get());
+                assertTrue(invoked.get(), "Headless handler should be invoked when -h flag is used");
         }
 }

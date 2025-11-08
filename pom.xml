@@ -12,12 +12,24 @@
 		<url>http://github.com/nlstn/JMediaOrganizer/tree/master</url>
 		<tag>HEAD</tag>
 	</scm>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>21</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-	</properties>
+        <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <java.version>21</java.version>
+                <maven.compiler.source>${java.version}</maven.compiler.source>
+                <maven.compiler.target>${java.version}</maven.compiler.target>
+        </properties>
+
+        <dependencyManagement>
+                <dependencies>
+                        <dependency>
+                                <groupId>org.junit</groupId>
+                                <artifactId>junit-bom</artifactId>
+                                <version>5.9.3</version>
+                                <type>pom</type>
+                                <scope>import</scope>
+                        </dependency>
+                </dependencies>
+        </dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>com.mpatric</groupId>
@@ -59,19 +71,24 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.20.0</version>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
-		</dependency>
+                <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter</artifactId>
+                        <scope>test</scope>
+                </dependency>
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
 			<version>3.2.3</version>
 		</dependency>
-	</dependencies>
-	<build>
+        </dependencies>
+        <repositories>
+                <repository>
+                        <id>central</id>
+                        <url>https://repo1.maven.org/maven2</url>
+                </repository>
+        </repositories>
+        <build>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -87,10 +104,10 @@
 					<target>${java.version}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-dependency-plugin</artifactId>
+                                <executions>
 					<execution>
 						<id>copy-dependencies</id>
 						<phase>prepare-package</phase>
@@ -103,10 +120,10 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-assembly-plugin</artifactId>
+                                <executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
@@ -124,7 +141,15 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-surefire-plugin</artifactId>
+                                <version>3.2.5</version>
+                                <configuration>
+                                        <useModulePath>false</useModulePath>
+                                </configuration>
+                        </plugin>
+                </plugins>
+        </build>
 </project>
