@@ -1,5 +1,6 @@
 package com.nlstn.jmediaOrganizer.gui.settings;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -9,6 +10,8 @@ import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -52,7 +55,7 @@ public class SettingsWindow {
 		dialog.setSize(850, 550);
 		dialog.setLocationRelativeTo(mainFrame);
 
-		dialog.setLayout(null);
+                dialog.setLayout(new BorderLayout());
 		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -62,8 +65,7 @@ public class SettingsWindow {
 
 		
 		CardLayout layout = new CardLayout();
-		mainPanel = new JPanel(layout);
-		mainPanel.setBounds(220, 10, 620, 530);
+                mainPanel = new JPanel(layout);
 
 		MainSettingsPanel mainSettingsPanel = new MainSettingsPanel();
 		addSettingsPanel("General", mainSettingsPanel);
@@ -71,12 +73,11 @@ public class SettingsWindow {
 		ConverterSettingsPanel converterSettingsPanel = new ConverterSettingsPanel();
 		addSettingsPanel("Converter", converterSettingsPanel);
 
-		layout.show(mainPanel, "General");
+                layout.show(mainPanel, "General");
 
-		dialog.getContentPane().add(mainPanel);
+                SettingsPanelTree tree = new SettingsPanelTree();
 
-		SettingsPanelTree tree = new SettingsPanelTree();
-		tree.setBounds(10, 10, 200, 445);
+                JScrollPane treeScrollPane = new JScrollPane(tree);
 		
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			
@@ -96,8 +97,12 @@ public class SettingsWindow {
 			}
 			
 		});
-
-		dialog.getContentPane().add(tree);
+                JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, mainPanel);
+                splitPane.setDividerLocation(220);
+                splitPane.setResizeWeight(0.25);
+                splitPane.setContinuousLayout(true);
+                splitPane.setBorder(null);
+                dialog.getContentPane().add(splitPane, BorderLayout.CENTER);
 
 		load();
 
