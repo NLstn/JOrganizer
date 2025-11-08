@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.nlstn.jmediaOrganizer.gui.Window;
+import com.nlstn.jmediaOrganizer.properties.InvalidLaunchConfigurationException;
 import com.nlstn.jmediaOrganizer.properties.LaunchConfiguration;
 import com.nlstn.jmediaOrganizer.properties.ProjectProperties;
 import com.nlstn.jmediaOrganizer.properties.Settings;
@@ -59,15 +60,26 @@ public class JMediaOrganizer {
 	private static File		inputFolder	= null;
 
 	public static void main(String[] args) {
-		Settings.loadSettings();
-		ProjectProperties.loadProjectProperties();
-		LaunchConfiguration config = LaunchConfiguration.parse(args);
-		log.info("Starting " + ProjectProperties.getName() + " v" + ProjectProperties.getVersion());
-		if (config.isHeadlessModeEnabled())
-			headlessHandlerFactory.get();
-		else
-			window = new Window();
-	}
+                Settings.loadSettings();
+                ProjectProperties.loadProjectProperties();
+                try {
+                        LaunchConfiguration config = LaunchConfiguration.parse(args);
+                        log.info("Starting " + ProjectProperties.getName() + " v" + ProjectProperties.getVersion());
+                        if (config.isHeadlessModeEnabled())
+                                headlessHandlerFactory.get();
+                        else
+                                window = new Window();
+                }
+                catch (InvalidLaunchConfigurationException e) {
+                        log.error(e.getMessage());
+                        System.err.println(e.getMessage());
+                        String helpText = e.getHelpText();
+                        if (helpText != null && !helpText.isBlank()) {
+                                System.err.println(helpText);
+                        }
+                        System.exit(1);
+                }
+        }
 
 	static void setHeadlessHandlerFactory(Supplier<HeadlessHandler> factory) {
 		headlessHandlerFactory = factory == null ? HeadlessHandler::new : factory;

@@ -1,6 +1,8 @@
 package com.nlstn.jmediaOrganizer.properties;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 
 import org.apache.commons.cli.CommandLine;
@@ -67,35 +69,33 @@ public class LaunchConfiguration {
 		CommandLineParser parser = new DefaultParser();
 		help = new HelpFormatter();
 
-		try {
-			cmd = parser.parse(options, args);
-		}
-		catch (ParseException e) {
-			System.out.println(e.getMessage());
-			help.printHelp("JMediaOrganizer", options);
-			Runtime.getRuntime().exit(-1);
-		}
+                try {
+                        cmd = parser.parse(options, args);
+                }
+                catch (ParseException e) {
+                        throw new InvalidLaunchConfigurationException(e.getMessage(), buildHelpText(), e);
+                }
 		processArgs();
 	}
 
-	private void processArgs() {
-		headlessMode = cmd.hasOption("h");
+        private void processArgs() {
+                headlessMode = cmd.hasOption("h");
 
-		// If headless mode is enabled, input folder has to be supplied via command args
-		if (headlessMode && !cmd.hasOption("i")) {
-			System.out.println("You need to specify an input folder (-i), if you run in headless mode!");
-			help.printHelp("JMediaOrganizer", options);
-			Runtime.getRuntime().exit(-1);
-		}
-		if (headlessMode) {
-			log.debug("Enabled headlessMode");
-		}
-		if (cmd.hasOption("i")) {
-			String inputFolderString = cmd.getOptionValue("i");
-			File inputFolder = new File(inputFolderString);
-			if (!(inputFolder.exists() && inputFolder.isDirectory())) {
-				log.error("Invalid input folder!");
-				help.printHelp("JMediaOrganizer", options);
+                // If headless mode is enabled, input folder has to be supplied via command args
+                if (headlessMode && !cmd.hasOption("i")) {
+                        throw new InvalidLaunchConfigurationException(
+                                        "You need to specify an input folder (-i), if you run in headless mode!",
+                                        buildHelpText());
+                }
+                if (headlessMode) {
+                        log.debug("Enabled headlessMode");
+                }
+                if (cmd.hasOption("i")) {
+                        String inputFolderString = cmd.getOptionValue("i");
+                        File inputFolder = new File(inputFolderString);
+                        if (!(inputFolder.exists() && inputFolder.isDirectory())) {
+                                log.error("Invalid input folder!");
+                                help.printHelp("JMediaOrganizer", options);
 			}
 			else {
 				JMediaOrganizer.setInputFolder(inputFolder);
@@ -137,11 +137,20 @@ public class LaunchConfiguration {
 				log.debug("Setting outputFolder to {}", outFile.getAbsolutePath());
 			}
 		}
-		if (cmd.hasOption("t")) {
-			Settings.setInvalidTypes(Arrays.asList(cmd.getOptionValue("t").split(";")));
-			log.debug("Setting invalidTypes to {}", cmd.getOptionValue("t"));
-		}
-	}
+                if (cmd.hasOption("t")) {
+                        Settings.setInvalidTypes(Arrays.asList(cmd.getOptionValue("t").split(";")));
+                        log.debug("Setting invalidTypes to {}", cmd.getOptionValue("t"));
+                }
+        }
+
+        private String buildHelpText() {
+                StringWriter writer = new StringWriter();
+                PrintWriter printWriter = new PrintWriter(writer);
+                help.printHelp(printWriter, HelpFormatter.DEFAULT_WIDTH, "JMediaOrganizer", null, options,
+                                HelpFormatter.DEFAULT_LEFT_PAD, HelpFormatter.DEFAULT_DESC_PAD, null, false);
+                printWriter.flush();
+                return writer.toString();
+        }
 
 	public boolean isHeadlessModeEnabled() {
 		return headlessMode;
