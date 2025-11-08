@@ -58,11 +58,7 @@ import com.nlstn.jmediaOrganizer.properties.ProjectProperties;
  */
 public class Window {
 
-	private static Logger log;
-
-	static {
-		log = LogManager.getLogger(Window.class);
-	}
+	private static final Logger LOGGER = LogManager.getLogger(Window.class);
 
 	public static final int	BUTTON_WIDTH	= 150;
 
@@ -83,12 +79,12 @@ public class Window {
 	private JTextArea		newValues;
 
 	public Window() {
-		log.debug("Creating main window...");
+		LOGGER.debug("Creating main window...");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			log.error("Failed to set Look and Feel!", e);
+			LOGGER.error("Failed to set Look and Feel!", e);
 		}
 		frame = new JFrame(ProjectProperties.getName());
 		frame.setSize(width, height);
@@ -137,7 +133,7 @@ public class Window {
 		new DropTarget(newValues, listener);
 
 		frame.setVisible(true);
-		log.debug("Finished building window.");
+		LOGGER.debug("Finished building window.");
 	}
 
 	/**
@@ -208,7 +204,7 @@ public class Window {
 			return;
 		JMediaOrganizer.setInputFolder(folder);
 		reloadInputFolder();
-		log.debug("Loaded new folder: " + folder.getAbsolutePath());
+		LOGGER.debug("Loaded new folder: " + folder.getAbsolutePath());
 	}
 
 	private void getConversionPreview() {
@@ -298,16 +294,16 @@ public class Window {
 							if (files.get(0).isDirectory()) {
 								JMediaOrganizer.setInputFolder(files.get(0));
 								reloadInputFolder();
-								log.debug("Loaded folder " + files.get(0).getAbsolutePath() + " per drag and drop");
+								LOGGER.debug("Loaded folder " + files.get(0).getAbsolutePath() + " per drag and drop");
 								return;
 							}
 						}
 					}
 					catch (UnsupportedFlavorException e1) {
-						log.error("Failed to accept DragAndDrop files.", e1);
+						LOGGER.error("Failed to accept DragAndDrop files.", e1);
 					}
 					catch (IOException e1) {
-						log.error("Failed to accept DragAndDrop files.", e1);
+						LOGGER.error("Failed to accept DragAndDrop files.", e1);
 					}
 				}
 			}

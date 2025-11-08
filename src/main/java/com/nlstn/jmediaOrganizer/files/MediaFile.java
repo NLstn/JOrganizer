@@ -16,14 +16,9 @@ import org.apache.tika.Tika;
  */
 public class MediaFile {
 
-	private static Logger	log;
+	private static final Logger LOGGER = LogManager.getLogger(MediaFile.class);
 
-	private static Tika		tika;
-
-	static {
-		log = LogManager.getLogger(MediaFile.class);
-		tika = new Tika();
-	}
+	private static final Tika TIKA = new Tika();
 
 	/**
 	 * The file where this mp3File is stored
@@ -77,10 +72,10 @@ public class MediaFile {
 	public boolean deleteIfOfType(List<String> types) {
 		if (types.contains(getExtension().toLowerCase(Locale.getDefault()))) {
 			if (!delete()) {
-				log.error("Failed to delete file " + getAbsolutePath());
+				LOGGER.error("Failed to delete file " + getAbsolutePath());
 			}
 			else {
-				log.error("Deleting file " + getAbsolutePath());
+				LOGGER.error("Deleting file " + getAbsolutePath());
 			}
 			return true;
 		}
@@ -90,10 +85,10 @@ public class MediaFile {
 	public String determineType() {
 		if (fileType.equals("Undefined") && file != null) {
 			try {
-				fileType = tika.detect(file);
+				fileType = TIKA.detect(file);
 			}
 			catch (IOException e) {
-				log.error("Error while resolving mime type.", e);
+				LOGGER.error("Error while resolving mime type.", e);
 			}
 		}
 		return fileType;
@@ -103,14 +98,14 @@ public class MediaFile {
 		File f = new File(newPath);
 		File parent = f.getParentFile();
 		if (!parent.mkdirs() && !parent.exists()) {
-			log.error("Failed create parent folder of path {}", newPath);
+			LOGGER.error("Failed create parent folder of path {}", newPath);
 			return false;
 		}
 		try {
 			return f.createNewFile() || f.exists();
 		}
 		catch (IOException e) {
-			log.error("Exception while creating new file!", e);
+			LOGGER.error("Exception while creating new file!", e);
 			return false;
 		}
 	}

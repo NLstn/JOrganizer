@@ -23,11 +23,7 @@ import com.nlstn.jmediaOrganizer.processing.Pattern;
  */
 public class LaunchConfiguration {
 
-	private static Logger log;
-
-	static {
-		log = LogManager.getLogger(LaunchConfiguration.class);
-	}
+        private static final Logger LOGGER = LogManager.getLogger(LaunchConfiguration.class);
 
 	public static LaunchConfiguration parse(String[] args) {
 		return new LaunchConfiguration(args);
@@ -39,7 +35,7 @@ public class LaunchConfiguration {
 	private boolean		headlessMode;
 
 	private LaunchConfiguration(String[] args) {
-		log.trace("Building CommandLineParser");
+                LOGGER.trace("Building CommandLineParser");
 		options = new Options();
 
 		Option headless = Option.builder("h").desc("Run in headless mode").longOpt("headless").build();
@@ -88,58 +84,58 @@ public class LaunchConfiguration {
 			Runtime.getRuntime().exit(-1);
 		}
 		if (headlessMode) {
-			log.debug("Enabled headlessMode");
+                        LOGGER.debug("Enabled headlessMode");
 		}
 		if (cmd.hasOption("i")) {
 			String inputFolderString = cmd.getOptionValue("i");
 			File inputFolder = new File(inputFolderString);
 			if (!(inputFolder.exists() && inputFolder.isDirectory())) {
-				log.error("Invalid input folder!");
+                                LOGGER.error("Invalid input folder!");
 				help.printHelp("JMediaOrganizer", options);
 			}
 			else {
 				JMediaOrganizer.setInputFolder(inputFolder);
-				log.debug("Setting {} as the input folder", inputFolder.getAbsolutePath());
+                                LOGGER.debug("Setting {} as the input folder", inputFolder.getAbsolutePath());
 			}
 		}
 		if (cmd.hasOption("id3")) {
 			Settings.setID3ToNameEnabled(Boolean.valueOf(cmd.getOptionValue("id3")));
-			log.debug("Setting id3ToNameEnabled setting to {}", Boolean.valueOf(cmd.getOptionValue("id3")));
+                        LOGGER.debug("Setting id3ToNameEnabled setting to {}", Boolean.valueOf(cmd.getOptionValue("id3")));
 		}
 		if (cmd.hasOption("tc")) {
 			try {
 				int threadCount = Integer.parseInt(cmd.getOptionValue("tc"));
 				int cores = Runtime.getRuntime().availableProcessors();
 				if (threadCount <= 0 || threadCount > cores) {
-					log.error("Invalid thread count! {}", threadCount);
+                                        LOGGER.error("Invalid thread count! {}", threadCount);
 				}
 				else {
 					Settings.setThreadCount(threadCount);
-					log.debug("Setting threadCount to {}", threadCount);
+                                        LOGGER.debug("Setting threadCount to {}", threadCount);
 				}
 			}
 			catch (NumberFormatException e) {
-				log.error("Threadcount must be a number! {}", cmd.getOptionValue("tc"));
+                                LOGGER.error("Threadcount must be a number! {}", cmd.getOptionValue("tc"));
 			}
 		}
 		if (cmd.hasOption("id3p")) {
 			Settings.setID3ToNamePattern(new Pattern(cmd.getOptionValue("id3p")));
-			log.debug("Setting id3ToNamePattern to {}", cmd.getOptionValue("id3p"));
+                        LOGGER.debug("Setting id3ToNamePattern to {}", cmd.getOptionValue("id3p"));
 		}
 		if (cmd.hasOption("out")) {
 			String outPath = cmd.getOptionValue("out");
 			File outFile = new File(outPath);
 			if (!outFile.isDirectory()) {
-				log.error("Output Folder {} is not a folder!", outFile.getAbsolutePath());
+                                LOGGER.error("Output Folder {} is not a folder!", outFile.getAbsolutePath());
 			}
 			else {
 				Settings.setOutputFolder(outFile.getAbsolutePath());
-				log.debug("Setting outputFolder to {}", outFile.getAbsolutePath());
+                                LOGGER.debug("Setting outputFolder to {}", outFile.getAbsolutePath());
 			}
 		}
 		if (cmd.hasOption("t")) {
 			Settings.setInvalidTypes(Arrays.asList(cmd.getOptionValue("t").split(";")));
-			log.debug("Setting invalidTypes to {}", cmd.getOptionValue("t"));
+                        LOGGER.debug("Setting invalidTypes to {}", cmd.getOptionValue("t"));
 		}
 	}
 

@@ -12,14 +12,10 @@ import com.nlstn.jmediaOrganizer.processing.FileProcessor;
  */
 public class HeadlessHandler {
 
-	private static Logger log;
-
-	static {
-		log = LogManager.getLogger(HeadlessHandler.class);
-	}
+        private static final Logger LOGGER = LogManager.getLogger(HeadlessHandler.class);
 
 	public HeadlessHandler() {
-		log.info("Launching Headless Mode");
+                LOGGER.info("Launching Headless Mode");
 		run();
 	}
 
