@@ -18,6 +18,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -201,15 +203,16 @@ public class Window {
 		return menuBar;
 	}
 
-	public void onChooseInputFolder() {
-		DirectoryChooser chooser = new DirectoryChooser(frame);
-		File folder = chooser.getSelectedDirectory();
-		if (folder == null)
-			return;
-		JMediaOrganizer.setInputFolder(folder);
-		reloadInputFolder();
-		log.debug("Loaded new folder: " + folder.getAbsolutePath());
-	}
+        public void onChooseInputFolder() {
+                DirectoryChooser chooser = new DirectoryChooser(frame);
+                File folder = chooser.getSelectedDirectory();
+                if (folder == null)
+                        return;
+                Path selected = folder.toPath();
+                JMediaOrganizer.setInputFolder(selected);
+                reloadInputFolder();
+                log.debug("Loaded new folder: " + selected.toAbsolutePath());
+        }
 
 	private void getConversionPreview() {
 		if (!checkInputFolderLoaded())
@@ -229,14 +232,14 @@ public class Window {
 		return true;
 	}
 
-	private void reloadInputFolder() {
-		List<File> files = FileProcessor.loadAllFiles();
-		StringBuilder builder = new StringBuilder();
-		for (File file : files) {
-			builder.append(file.getAbsolutePath()).append("\n");
-		}
-		oldValues.setText(builder.toString());
-	}
+        private void reloadInputFolder() {
+                List<Path> files = FileProcessor.loadAllFiles();
+                StringBuilder builder = new StringBuilder();
+                for (Path file : files) {
+                        builder.append(file.toAbsolutePath()).append("\n");
+                }
+                oldValues.setText(builder.toString());
+        }
 
 	public JFrame getFrame() {
 		return frame;
@@ -294,14 +297,15 @@ public class Window {
 					try {
 						@SuppressWarnings("unchecked")
 						List<File> files = (List<File>) t.getTransferData(flavor);
-						if (files.size() == 1) {
-							if (files.get(0).isDirectory()) {
-								JMediaOrganizer.setInputFolder(files.get(0));
-								reloadInputFolder();
-								log.debug("Loaded folder " + files.get(0).getAbsolutePath() + " per drag and drop");
-								return;
-							}
-						}
+                                                if (files.size() == 1) {
+                                                        Path dropped = files.get(0).toPath();
+                                                        if (Files.isDirectory(dropped)) {
+                                                                JMediaOrganizer.setInputFolder(dropped);
+                                                                reloadInputFolder();
+                                                                log.debug("Loaded folder " + dropped.toAbsolutePath() + " per drag and drop");
+                                                                return;
+                                                        }
+                                                }
 					}
 					catch (UnsupportedFlavorException e1) {
 						log.error("Failed to accept DragAndDrop files.", e1);

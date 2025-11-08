@@ -1,10 +1,12 @@
 package com.nlstn.jmediaOrganizer.processing;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -35,35 +37,35 @@ public final class FileProcessor {
 
     private static final Logger LOGGER = LogManager.getLogger(FileProcessor.class);
 
-    private static volatile List<File> currentFiles = List.of();
+        private static volatile List<Path> currentFiles = List.of();
     private static volatile boolean folderLoaded;
     private static MP3File example;
 
     private FileProcessor() {
     }
 
-    public static List<File> loadAllFiles() {
-        File inputFolder = JMediaOrganizer.getInputFolder();
+    public static List<Path> loadAllFiles() {
+        Path inputFolder = JMediaOrganizer.getInputFolder();
         if (inputFolder == null) {
             currentFiles = List.of();
             folderLoaded = false;
             return currentFiles;
         }
 
-        try (Stream<Path> stream = Files.walk(inputFolder.toPath())) {
+        try (Stream<Path> stream = Files.walk(inputFolder)) {
             currentFiles = stream
                     .filter(Files::isRegularFile)
-                    .map(Path::toFile)
-                    .sorted(Comparator.comparing(File::getAbsolutePath, String.CASE_INSENSITIVE_ORDER))
+                    .map(Path::toAbsolutePath)
+                    .sorted(Comparator.comparing(path -> path.toString(), String.CASE_INSENSITIVE_ORDER))
                     .collect(Collectors.toCollection(ArrayList::new));
         }
         catch (IOException e) {
-            throw new UncheckedIOException("Failed to load files from input folder " + inputFolder, e);
+            throw new UncheckedIOException("Failed to load files from input folder " + inputFolder.toAbsolutePath(), e);
         }
 
         folderLoaded = true;
         example = null;
-        LOGGER.debug("Found {} files in input folder {}", currentFiles.size(), inputFolder.getAbsolutePath());
+        LOGGER.debug("Found {} files in input folder {}", currentFiles.size(), inputFolder.toAbsolutePath());
         return List.copyOf(currentFiles);
     }
 
@@ -73,7 +75,7 @@ public final class FileProcessor {
         }
         int fileCount = currentFiles.size();
         int threadCount = determineThreadCount(fileCount);
-        List<List<File>> partitions = partitionFiles(threadCount);
+        List<List<Path>> partitions = partitionFiles(threadCount);
         List<String> preview = new ArrayList<>();
         List<String> invalidTypes = Settings.getInvalidTypes();
 
@@ -110,7 +112,7 @@ public final class FileProcessor {
         }
         int fileCount = currentFiles.size();
         int threadCount = determineThreadCount(fileCount);
-        List<List<File>> partitions = partitionFiles(threadCount);
+        List<List<Path>> partitions = partitionFiles(threadCount);
         List<String> invalidTypes = Settings.getInvalidTypes();
 
         ExecutorService service = Executors.newFixedThreadPool(threadCount);
@@ -142,43 +144,62 @@ public final class FileProcessor {
     }
 
     public static void cleanInputFolder() {
-        File inputFolder = JMediaOrganizer.getInputFolder();
+        Path inputFolder = JMediaOrganizer.getInputFolder();
         if (inputFolder == null) {
             return;
         }
-        File[] subFiles = inputFolder.listFiles();
-        if (subFiles != null) {
-            for (File subFile : subFiles) {
-                if (subFile.isDirectory()) {
-                    cleanFolder(subFile);
+        try {
+            Files.walkFileTree(inputFolder, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (exc != null) {
+                        throw exc;
+                    }
+                    if (!dir.equals(inputFolder)) {
+                        boolean empty;
+                        try {
+                            empty = isDirectoryEmpty(dir);
+                        }
+                        catch (IOException e) {
+                            LOGGER.warn("Failed to inspect directory during cleanup: {}", dir.toAbsolutePath(), e);
+                            return FileVisitResult.CONTINUE;
+                        }
+                        if (empty) {
+                            LOGGER.info("Deleting Folder {}", dir.toAbsolutePath());
+                            try {
+                                Files.delete(dir);
+                            }
+                            catch (IOException e) {
+                                LOGGER.warn("Failed to delete empty folder in cleanup stage: {}", dir.toAbsolutePath(), e);
+                            }
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
+            });
+
+            boolean rootEmpty = isDirectoryEmpty(inputFolder);
+            if (rootEmpty) {
+                LOGGER.info("Deleting empty folder {}", inputFolder.toAbsolutePath());
+                if (Settings.getDeleteRootFolder()) {
+                    try {
+                        Files.delete(inputFolder);
+                    }
+                    catch (IOException e) {
+                        LOGGER.warn("Failed to delete empty root folder in cleanup stage: {}", inputFolder.toAbsolutePath(), e);
+                    }
+                }
+                JMediaOrganizer.setInputFolder(null);
             }
         }
-        subFiles = inputFolder.listFiles();
-        if (subFiles != null && subFiles.length == 0) {
-            LOGGER.info("Deleting empty folder {}", inputFolder.getAbsolutePath());
-            if (Settings.getDeleteRootFolder() && !inputFolder.delete()) {
-                LOGGER.warn("Failed to delete empty root folder in cleanup stage: {}", inputFolder.getAbsolutePath());
-            }
-            JMediaOrganizer.setInputFolder(null);
+        catch (IOException e) {
+            throw new UncheckedIOException("Failed to clean input folder " + inputFolder.toAbsolutePath(), e);
         }
     }
 
-    private static void cleanFolder(File folder) {
-        File[] subFiles = folder.listFiles();
-        if (subFiles != null) {
-            for (File subFile : subFiles) {
-                if (subFile.isDirectory()) {
-                    cleanFolder(subFile);
-                }
-            }
-        }
-        subFiles = folder.listFiles();
-        if (subFiles != null && subFiles.length == 0) {
-            LOGGER.info("Deleting Folder {}", folder.getAbsolutePath());
-            if (!folder.delete()) {
-                LOGGER.warn("Failed to delete empty folder in cleanup stage: {}", folder.getAbsolutePath());
-            }
+    private static boolean isDirectoryEmpty(Path directory) throws IOException {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+            return !stream.iterator().hasNext();
         }
     }
 
@@ -229,11 +250,11 @@ public final class FileProcessor {
         return Math.max(1, Math.min(configured, fileCount));
     }
 
-    private static List<List<File>> partitionFiles(int partitions) {
+    private static List<List<Path>> partitionFiles(int partitions) {
         if (partitions <= 0) {
             return List.of();
         }
-        List<List<File>> result = new ArrayList<>(partitions);
+        List<List<Path>> result = new ArrayList<>(partitions);
         int size = currentFiles.size();
         int baseSize = size / partitions;
         int remainder = size % partitions;

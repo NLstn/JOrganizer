@@ -2,7 +2,6 @@ package com.nlstn.jmediaOrganizer.processing;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +30,7 @@ public class FileProcessorTest {
         @Before
         public void setup() throws IOException {
                 inputDirectory = Files.createTempDirectory("jmedia-empty-input");
-                JMediaOrganizer.setInputFolder(inputDirectory.toFile());
+                JMediaOrganizer.setInputFolder(inputDirectory);
                 FileProcessor.loadAllFiles();
         }
 
@@ -41,8 +40,14 @@ public class FileProcessorTest {
                 if (inputDirectory != null) {
                         try (var paths = Files.walk(inputDirectory)) {
                                 paths.sorted(Comparator.reverseOrder())
-                                                .map(Path::toFile)
-                                                .forEach(File::delete);
+                                                .forEach(path -> {
+                                                        try {
+                                                                Files.deleteIfExists(path);
+                                                        }
+                                                        catch (IOException e) {
+                                                                // ignore cleanup failures in tests
+                                                        }
+                                                });
                         }
                 }
         }

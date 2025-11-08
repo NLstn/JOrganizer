@@ -2,7 +2,7 @@ package com.nlstn.jmediaOrganizer.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import com.nlstn.jmediaOrganizer.JMediaOrganizer;
@@ -33,7 +33,7 @@ public class MainTest {
 
 	@Test
 	public void conversionPreviewCountTest() {
-		JMediaOrganizer.setInputFolder(new File("./src/test/resources/ConversionPreviewCountTest"));
+		JMediaOrganizer.setInputFolder(Path.of("./src/test/resources/ConversionPreviewCountTest"));
 		Settings.loadSettings();
 		Settings.setID3ToNameEnabled(true);
 		FileProcessor.loadAllFiles();
